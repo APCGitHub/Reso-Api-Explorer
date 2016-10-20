@@ -1,0 +1,27 @@
+{
+  "name": "reso-api-explorer",
+  "version": "0.0.1",
+  "description": "RESO Web API explorer",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Anecka/Reso-Api-Explorer.git"
+  },
+  "keywords": [
+    "reso",
+    "web",
+    "api",
+    "explorer",
+    "odata",
+    "realstate"
+  ],
+  "author": "Andrew Clinton <aclinton@anecka.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Anecka/Reso-Api-Explorer/issues"
+  },
+  "homepage": "https://github.com/Anecka/Reso-Api-Explorer#readme"
+}
