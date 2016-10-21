@@ -52,9 +52,9 @@
                                         <div class="valign-wrapper">
                                             <div class="col s12 m9">
                                                 <div class="input-field">
-                                                    <input v-validate data-rules="required" v-model="query_builder.filter[index].value" id="filter" name="filter" type="text" placeholder="ListPrice ge 100000">
+                                                    <input v-validate data-rules="required" v-bind:class="{'invalid': errors.has('filter_' + index)}" v-model="query_builder.filter[index].value" id="filter" :name="'filter_' + index" type="text" placeholder="ListPrice ge 100000">
                                                     <label class="active" for="filter">$filter</label>
-                                                    <span class="error red-text darken-2" v-show="errors.has('filter')">{{ errors.first('filter') }}</span>
+                                                    <span class="error red-text darken-2" v-show="errors.has('filter_' + index)">{{ errors.first('filter_' + index) }}</span>
                                                 </div>
                                             </div>
                                             <div class="col s12 m3">
@@ -72,15 +72,24 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col s12">
-                                            <button @click="addFilter" class="waves-effect waves-light btn right"><i class="fa fa-plus left" aria-hidden="true"></i>Filter</button>
+                                        <div class="valign-wrapper">
+                                            <div class="col s7" v-show="query_builder.filter.length < 1">
+                                                <div class="card-panel center-align">
+                                                    <i class="fa fa-leaf left" aria-hidden="true"></i>
+                                                    <p>No filters added yet!</p>
+                                                </div>
+                                            </div>
+                                            <div class="col s5">
+                                                <button @click="addFilter" class="waves-effect waves-light btn right"><i class="fa fa-plus left" aria-hidden="true"></i>Filter</button>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="row" v-for="(orderby, index) in query_builder.orderby">
                                         <div class="valign-wrapper">
                                             <div class="input-field col s5">
-                                                <input type="text" id="orderby" name="orderby" v-model="query_builder.orderby[index].value">
+                                                <input v-validate data-rules="required" type="text" id="orderby" :name="'orderby_' + index" v-model="query_builder.orderby[index].value">
                                                 <label class="active" for="orderby">$orderby</label>
+                                                <span class="error red-text darken-2" v-show="errors.has('orderby_' + index)">{{ errors.first('orderby_' + index) }}</span>
                                             </div>
                                             <div class="input-field col s4">
                                                 <select class="browser-default" v-model="query_builder.orderby[index].direction">
@@ -101,12 +110,22 @@
                                             <div class="col s7" v-show="query_builder.orderby.length < 1">
                                                 <div class="card-panel center-align">
                                                     <i class="fa fa-leaf left" aria-hidden="true"></i>
-                                                    <p>No orderby's added yet</p>
+                                                    <p>No orderby's added yet!</p>
                                                 </div>
                                             </div>
                                             <div class="col s5">
                                                 <button @click="addOrderby" class="waves-effect waves-light btn right"><i class="fa fa-plus left" aria-hidden="true"></i>Orderby</button>
                                             </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="input-field col s4">
+                                            <input type="tel" placeholder="100" name="top" v-model="query_builder.top" id="top">
+                                            <label for="top" class="active">$top</label>
+                                        </div>
+                                        <div class="input-field col s4 offset-s2">
+                                            <input type="tel" placeholder="10" name="skip" v-model="query_builder.skip" id="skip">
+                                            <label for="skip" class="active">$skip</label>
                                         </div>
                                     </div>
                                 </div>
@@ -152,7 +171,9 @@
                 query_builder: {
                     select: '',
                     filter: [],
-                    orderby: []
+                    orderby: [],
+                    top: '',
+                    skip: ''
                 }
             }
         },
