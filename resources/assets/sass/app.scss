@@ -1,0 +1,16 @@
+@import "./bower_components/materialize/sass/materialize";
+@import "./bower_components/font-awesome/scss/font-awesome";
+@import "partials/utils";
+@import "partials/_errors";
+
+nav {
+  .brand-logo {
+    margin-left:10px !important;
+  }
+}
+
+@media #{$medium-and-up} {
+  .container {
+    width: 85% !important;
+  }
+}
