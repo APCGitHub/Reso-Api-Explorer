@@ -1,0 +1,29 @@
+{
+  "name": "reso-api-explorer",
+  "description": "RESO Web API explorer",
+  "main": "dist/index.js",
+  "authors": [
+    "Andrew Clinton <aclinton@anecka.com>"
+  ],
+  "license": "ISC",
+  "keywords": [
+    "reso",
+    "web",
+    "api",
+    "explorer",
+    "odata",
+    "realstate"
+  ],
+  "homepage": "https://github.com/Anecka/Reso-Api-Explorer",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "materialize": "^0.97.7",
+    "font-awesome": "^4.6.3"
+  }
+}
