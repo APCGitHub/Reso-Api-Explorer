@@ -19,7 +19,7 @@ elixir(function (mix){
     mix.sass([
             'app.scss'
         ],
-        './js/css/app.css');
+        './public/css/app.css');
 
     mix.copy('./public/css/app.css', './build/css/app.css');
 });
