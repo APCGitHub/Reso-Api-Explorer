@@ -232,15 +232,17 @@
 </template>
 
 <script type="text/babel">
-    import queryService from '../services/QueryService'
-    import googleMapService from '../services/GoogleMaps'
-    import markerService from '../services/MarkerService'
-    import accessTokenSerivce from '../services/AccessTokenService'
-    import serverService from '../services/ServerService'
-    import Results from './Results.vue'
-    import _ from 'lodash'
-    import $ from 'jquery'
-    import swal from 'sweetalert'
+    import queryService from '../services/QueryService';
+    import googleMapService from '../services/GoogleMaps';
+    import markerService from '../services/MarkerService';
+    import accessTokenSerivce from '../services/AccessTokenService';
+    import serverService from '../services/ServerService';
+    import Results from './Results.vue';
+    import _ from 'lodash';
+    import $ from 'jquery';
+    import swal from 'sweetalert';
+    import Promise from 'es6-promise';
+    import config from '../config/env';
 
     export default {
         components: {Results},
@@ -305,47 +307,47 @@
                 if(this.$route.query.code){
                     this.code = this.$route.query.code;
 
-                    swal({
-                        title: "Credentials",
-                        text: "Please supply your client_secret.",
-                        type: "input",
-                        showCancelButton: true,
-                        closeOnConfirm: false,
-                        animation: "slide-from-top",
-                        inputPlaceholder: "secret"
-                    },
-                    (client_secret) => {
-                        if (client_secret === false) {
-                            this.$router.replace('/servers');
-                            return false;
-                        }
-
-                        if (client_secret === "") {
-                            swal.showInputError("You need to write something!");
-                            return false
-                        }
-
-                        //See what we can do about getting a new access_token
-                        if(this.services.accesstoken_service){
-                            this.services.accesstoken_service.getToken(client_secret, this.code).then((res) => {
-                                let resBody = res.body;
-
-                                //Try to update the server with the new access token
-                                this.services.server_service.update(this.server.id, {
-                                    access_token: resBody.access_token
-                                }).then((server) => {
-                                    this.server = server;
-
-                                    swal('Success!', 'Retrieved a new access token.');
-                                }, () => {
-                                    swal('Uh oh', 'There was an error updating the server.', 'warning');
-                                });
-                            }, (err) => {
-                                let resBody = err.body;
-                                swal.close();
+                    if(this.server.client_secret){
+                        this.getToken(this.server.client_secret).then(() => {
+                            swal({
+                                title: 'Success',
+                                text: 'Grabbed a new access token!',
+                                type: 'success'
                             });
-                        }
-                    });
+                        }, () => {
+                            swal({
+                                title: 'Uh oh',
+                                text: 'There was a problem getting the access token',
+                                type: 'warning'
+                            });
+                        });
+                    } else {
+                        swal({
+                            title: "Credentials",
+                            text: "Please supply your client_secret.",
+                            type: "input",
+                            showCancelButton: true,
+                            closeOnConfirm: false,
+                            animation: "slide-from-top",
+                            inputPlaceholder: "secret"
+                        },
+                        (client_secret) => {
+                            if (client_secret === false) {
+                                this.$router.replace('/servers');
+                                return false;
+                            }
+
+                            if (client_secret === "") {
+                                swal.showInputError("You need to write something!");
+                                return false
+                            }
+
+                            //See what we can do about getting a new access_token
+                            if(this.services.accesstoken_service){
+
+                            }
+                        });
+                    }
                 } else { //no redirect url so we are hitting for the first time
                     if(!this.server.access_token){
                         this.fetchAuthCode();
@@ -532,6 +534,27 @@
                         scrollTop: offset
                     }, 400);
                 }, 400);
+            },
+            getToken(client_secret) {
+                return new Promise((resolve, reject) => {
+                    this.services.accesstoken_service.getToken(client_secret, this.code).then((res) => {
+                        let resBody = res.body;
+
+                        //Try to update the server with the new access token
+                        this.services.server_service.update(this.server.id, {
+                            access_token: resBody.access_token
+                        }).then((server) => {
+                            this.server = server;
+
+                            resolve(1);
+                        }, () => {
+                            reject();
+                        });
+                    }, (err) => {
+                        console.log(err);
+                        reject(err);
+                    });
+                });
             }
         },
         computed: {
@@ -541,7 +564,7 @@
             url() {
                 let s = this.services.query_service.buildUrl(this.query_builder);
 
-                s = this.api.url + 'v2/property?' + s;
+                s = config.ENV.API_URL + 'v2/property?' + s;
 
                 return s;
             }
