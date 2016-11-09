@@ -60,7 +60,7 @@
     "vue-resource": "^1.0.3",
     "vue-router": "^2.0.0-rc.7",
     "vue-style-loader": "^1.0.0",
-    "vue-validator": "^2.1.7"
-    "webpack": "^1.13.2",
+    "vue-validator": "^2.1.7",
+    "webpack": "^1.13.2"
   }
 }
