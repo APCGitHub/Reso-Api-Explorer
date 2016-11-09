@@ -45,7 +45,7 @@ export default class QueryService {
             description: 'This query selects properties with a listing price between $50K & $200K .',
             query: {
                 select: 'ListingId, ListPrice',
-                filter: [{value: 'ListPrice ge 50000', join: 'and'}, {value: 'ListPrice le 200000', join: ''}],
+                filter: [{value: 'ListPrice ge 50000', join: 'and'}, {value: 'ListPrice le 200000', join: 'and'}],
                 orderby: [],
                 top: '',
                 skip: ''
@@ -57,7 +57,7 @@ export default class QueryService {
                 select: 'ListingId, ListPrice, ListingContractDate',
                 filter: [
                     {value: 'year(ListingContractDate) eq 2016', join: 'and'},
-                    {value: 'month(ListingContractDate) eq 6', join: ''}
+                    {value: 'month(ListingContractDate) eq 6', join: 'and'}
                 ],
                 orderby: [],
                 top: '',
@@ -70,7 +70,7 @@ export default class QueryService {
                 select: 'ListingId, ListPrice, ListingContractDate',
                 filter: [
                     {value: 'year(ListingContractDate) eq 2016', join: 'and'},
-                    {value: 'month(ListingContractDate) eq 6', join: ''}
+                    {value: 'month(ListingContractDate) eq 6', join: 'and'}
                 ],
                 orderby: [{value: 'ListPrice', direction: 'asc'}],
                 top: '',
@@ -83,12 +83,86 @@ export default class QueryService {
                 select: 'ListingId, ListPrice, ListingContractDate',
                 filter: [
                     {value: 'year(ListingContractDate) eq 2016', join: 'and'},
-                    {value: 'month(ListingContractDate) eq 6', join: ''}
+                    {value: 'month(ListingContractDate) eq 6', join: 'and'}
                 ],
                 orderby: [{value: 'ListPrice', direction: 'asc'}],
                 top: '10',
                 skip: '11'
             }
         }];
+    }
+
+    buildUrl(queryObject) {
+        let s = '';
+        let pieces = [0, 0, 0, 0, 0]; //select, filter, orderby, top, skip
+
+        //$select
+        if(queryObject.select){
+            pieces[0] = 1;
+            s += '$select=' + queryObject.select;
+        }
+
+        //$filter
+        if(queryObject.filter.length > 0){
+            pieces[1] = 1;
+
+            if(pieces[0])
+                s += '&';
+
+            s += '$filter=';
+
+            _.forEach(queryObject.filter, (filter, index) => {
+                s += filter.value;
+
+                //only add the join if not the last one
+                if((index + 1) < queryObject.filter.length)
+                    s += " " + filter.join + " ";
+            });
+        }
+
+        //$orderby
+        if(queryObject.orderby.length > 0){
+            pieces[2] = 1;
+
+            if(pieces[0] || pieces[1])
+                s += '&';
+
+            s += '$orderby=';
+
+            _.forEach(queryObject.orderby, (orderby, index) => {
+                if(orderby.value){
+                    s += orderby.value + ' ' + orderby.direction;
+
+                    if((index + 1) < queryObject.orderby.length)
+                        s += ", ";
+                }
+            });
+        }
+
+        //$top
+        if(queryObject.top){
+            pieces[3] = 1;
+
+            if(pieces[0] || pieces[1] || pieces[2])
+                s += '&';
+
+            s += '$top=';
+
+            s += queryObject.top;
+        }
+
+        //$skip
+        if(queryObject.skip){
+            pieces[4] = 1;
+
+            if(pieces[0] || pieces[1] || pieces[2] || pieces[3])
+                s += '&';
+
+            s += '$skip=';
+
+            s += queryObject.skip;
+        }
+
+        return s;
     }
 }
