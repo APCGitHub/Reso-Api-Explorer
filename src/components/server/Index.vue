@@ -98,7 +98,7 @@
 
                     //look through existing
                     for(let i = 0; i < this.servers.length; i++){
-                        if(this.servers[i].name === this.$parent.rets_rabbit.name){
+                        if(this.servers[i].name === this.$parent.default_server.name){
                             rr_exists = true;
                             this.updateRRServer();
                             break;
@@ -107,7 +107,7 @@
 
                     //create it
                     if(!rr_exists){
-                        this.serverService.store(this.$parent.rets_rabbit).then((server) => {
+                        this.serverService.store(this.$parent.default_server).then((server) => {
                             this.$parent.flash('info', 'Created the default Rets Rabbit server.', 4500);
 
                             this.serverService.index().then((servers) => {
@@ -119,7 +119,7 @@
             },
             updateRRServer() {
                 this.findRRServer().then((server) => {
-                    this.serverService.update(server.id, this.$parent.rets_rabbit).then(() => {
+                    this.serverService.update(server.id, this.$parent.default_server).then(() => {
                         this.$parent.flash('info', 'The Rets Rabbit demo server has been updated.');
                     });
                 }, () => {
@@ -132,7 +132,7 @@
                     this.serverService.index().then(servers => {
                         let found = false, server;
                         for(let i = 0, len = servers.length; i < len; i++){
-                            if(servers[i].name === this.$parent.rets_rabbit.name){
+                            if(servers[i].name === this.$parent.default_server.name){
                                 found = true;
                                 server = servers[i];
                                 break;

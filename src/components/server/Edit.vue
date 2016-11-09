@@ -73,7 +73,7 @@
 
             this.serverService.show(this.$route.params.id).then((server) => {
                 //If editing the RR server then go back
-                if(server.name === this.$parent.rets_rabbit.name){
+                if(server.name === this.$parent.default_server.name){
                     Materialize.toast('You can\'t edit the default Rets Rabbit server!', 4500, 'warning');
                     this.$router.go(-1);
                 } else {
