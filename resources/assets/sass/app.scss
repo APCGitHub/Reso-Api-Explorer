@@ -1,3 +1,4 @@
+@import "partials/colors";
 @import "partials/overrides";
 @import "./bower_components/materialize/sass/materialize";
 @import "./bower_components/font-awesome/scss/font-awesome";
@@ -6,7 +7,9 @@
 @import "partials/utils";
 @import "partials/_errors";
 @import "partials/animations";
-@import "partials/_servers";
+@import "partials/servers";
+@import "partials/toasts";
+@import "partials/buttons";
 
 nav {
   .brand-logo {

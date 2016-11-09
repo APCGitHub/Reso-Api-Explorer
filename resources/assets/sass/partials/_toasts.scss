@@ -1,0 +1,17 @@
+.toast {
+  &.success {
+    background-color: $success !important;
+  }
+
+  &.info {
+    background-color: $info;
+  }
+
+  &.warning {
+    background-color: $warning;
+  }
+
+  &.danger {
+    background-color: $danger;
+  }
+}
