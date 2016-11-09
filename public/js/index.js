@@ -4226,7 +4226,245 @@
 
 	var _sweetalert2 = _interopRequireDefault(_sweetalert);
 
+	var _es6Promise = __webpack_require__(41);
+
+	var _es6Promise2 = _interopRequireDefault(_es6Promise);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
 
 	exports.default = {
 	    components: { Results: _Results2.default },
@@ -4293,46 +4531,30 @@
 	            if (_this.$route.query.code) {
 	                _this.code = _this.$route.query.code;
 
-	                (0, _sweetalert2.default)({
-	                    title: "Credentials",
-	                    text: "Please supply your client_secret.",
-	                    type: "input",
-	                    showCancelButton: true,
-	                    closeOnConfirm: false,
-	                    animation: "slide-from-top",
-	                    inputPlaceholder: "secret"
-	                }, function (client_secret) {
-	                    if (client_secret === false) {
-	                        _this.$router.replace('/servers');
-	                        return false;
-	                    }
+	                if (_this.server.client_secret) {} else {
+	                    (0, _sweetalert2.default)({
+	                        title: "Credentials",
+	                        text: "Please supply your client_secret.",
+	                        type: "input",
+	                        showCancelButton: true,
+	                        closeOnConfirm: false,
+	                        animation: "slide-from-top",
+	                        inputPlaceholder: "secret"
+	                    }, function (client_secret) {
+	                        if (client_secret === false) {
+	                            _this.$router.replace('/servers');
+	                            return false;
+	                        }
 
-	                    if (client_secret === "") {
-	                        _sweetalert2.default.showInputError("You need to write something!");
-	                        return false;
-	                    }
+	                        if (client_secret === "") {
+	                            _sweetalert2.default.showInputError("You need to write something!");
+	                            return false;
+	                        }
 
-	                    //See what we can do about getting a new access_token
-	                    if (_this.services.accesstoken_service) {
-	                        _this.services.accesstoken_service.getToken(client_secret, _this.code).then(function (res) {
-	                            var resBody = res.body;
-
-	                            //Try to update the server with the new access token
-	                            _this.services.server_service.update(_this.server.id, {
-	                                access_token: resBody.access_token
-	                            }).then(function (server) {
-	                                _this.server = server;
-
-	                                (0, _sweetalert2.default)('Success!', 'Retrieved a new access token.');
-	                            }, function () {
-	                                (0, _sweetalert2.default)('Uh oh', 'There was an error updating the server.', 'warning');
-	                            });
-	                        }, function (err) {
-	                            var resBody = err.body;
-	                            _sweetalert2.default.close();
-	                        });
-	                    }
-	                });
+	                        //See what we can do about getting a new access_token
+	                        if (_this.services.accesstoken_service) {}
+	                    });
+	                }
 	            } else {
 	                //no redirect url so we are hitting for the first time
 	                if (!_this.server.access_token) {
@@ -4534,6 +4756,29 @@
 	                    scrollTop: offset
 	                }, 400);
 	            }, 400);
+	        },
+	        getToken: function getToken(client_secret) {
+	            var _this4 = this;
+
+	            return new _es6Promise2.default(function (resolve, reject) {});
+
+	            this.services.accesstoken_service.getToken(client_secret, this.code).then(function (res) {
+	                var resBody = res.body;
+
+	                //Try to update the server with the new access token
+	                _this4.services.server_service.update(_this4.server.id, {
+	                    access_token: resBody.access_token
+	                }).then(function (server) {
+	                    _this4.server = server;
+
+	                    (0, _sweetalert2.default)('Success!', 'Retrieved a new access token.');
+	                }, function () {
+	                    (0, _sweetalert2.default)('Uh oh', 'There was an error updating the server.', 'warning');
+	                });
+	            }, function (err) {
+	                var resBody = err.body;
+	                _sweetalert2.default.close();
+	            });
 	        }
 	    },
 	    computed: {
@@ -4548,239 +4793,7 @@
 	            return s;
 	        }
 	    }
-	}; //
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
+	};
 
 /***/ },
 /* 16 */
