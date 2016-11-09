@@ -29,14 +29,30 @@
     export default {
         data() {
             return {
-                siteName: 'RESO Explorer',
+                siteName: 'ResoMD',
+                rets_rabbit: {
+                    name: 'Rets Rabbit Test',
+                    client_id: 'retsrabbit',
+                    client_secret: 'retsrabbit',
+                    access_token: '',
+                    auth_endpoint: '',
+                    token_endpoint: ''
+                },
                 serverService: null
             }
         },
         created() {
             this.serverService = new serverService();
         },
-        methods: {}
+        methods: {
+            flash(type, message, duration) {
+                if(!duration){
+                    duration = 3000;
+                }
+
+                Materialize.toast(message, duration, type);
+            }
+        }
     }
 </script>
 
