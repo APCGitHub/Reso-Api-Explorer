@@ -1,0 +1,40 @@
+/* === LIST === */
+.list-enter-active {
+  animation: slideInLeft 0.3s;
+}
+
+.list-leave {
+  opacity: 0;
+}
+
+.list-leave-active {
+  animation: slideOutRight 0.3s;
+}
+
+/* === FADE === */
+.fade-enter-active {
+  animation: fadeIn 0.3s;
+}
+
+.fade-leave {
+  opacity: 0;
+}
+
+.fade-leave-active {
+  animation: fadeOut 0.3s;
+}
+
+/* === MODAL === */
+.modal-enter {
+  opacity: 0;
+}
+
+.modal-leave-active {
+  opacity: 0;
+}
+
+.modal-enter .modal-container,
+.modal-leave-active .modal-container {
+  -webkit-transform: scale(1.1);
+  transform: scale(1.1);
+}

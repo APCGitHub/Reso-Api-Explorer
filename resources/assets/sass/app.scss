@@ -1,7 +1,12 @@
+@import "partials/overrides";
 @import "./bower_components/materialize/sass/materialize";
 @import "./bower_components/font-awesome/scss/font-awesome";
+@import "./bower_components/animate-sass/animate";
+@import "./bower_components/sweetalert/dev/sweetalert";
 @import "partials/utils";
 @import "partials/_errors";
+@import "partials/animations";
+@import "partials/_servers";
 
 nav {
   .brand-logo {
@@ -13,4 +18,20 @@ nav {
   .container {
     width: 85% !important;
   }
+}
+
+body {
+  background-color: #f2f2f2;
+}
+
+.no-overflow{
+  overflow: hidden
+}
+
+pre {
+  white-space: pre-wrap;       /* css-3 */
+  white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+  white-space: -pre-wrap;      /* Opera 4-6 */
+  white-space: -o-pre-wrap;    /* Opera 7 */
+  word-wrap: break-word;
 }
