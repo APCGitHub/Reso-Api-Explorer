@@ -5,14 +5,14 @@ import shortId from 'shortid';
 
 export default class Server {
     constructor(data) {
-        this.name = data.name ? data.name : '';
-        this.client_id = data.client_id ? data.client_id : '';
-        this.access_token = '';
-        this.auth_endpoint = data.auth_endpoint ? data.auth_endpoint : '';
-        this.token_endpoint = data.token_endpoint ? data.token_endpoint: '';
         this.id = shortId.generate();
-
         this.redirect_uri = 'http://127.0.0.1:8321/#/explore/' + this.id;
+
+        for(let key in data){
+            if(Server.fillable.indexOf(key) > -1){
+                this[key] = data[key];
+            }
+        }
     }
 
     static get fillable() {

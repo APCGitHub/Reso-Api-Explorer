@@ -35,7 +35,7 @@
                                     <span class="error red-text darken-2" v-show="errors.has('server.token_endpoint')">{{ errors.first('server.token_endpoint') }}</span>
                                 </div>
                             </div>
-                            <div class="row">
+                            <div class="row mb0">
                                 <div class="col s12 center-align">
                                     <button :disabled="errors.any()" class="waves-effect waves-light btn">Update</button>
                                 </div>
@@ -67,31 +67,26 @@
                 }
             }
         },
-        beforeRouteEnter(to, from, next){
-            let serverService = new ServerService();
-
-            serverService.show(to.params.id).then((server) => {
-                next(vm => {
-                    vm.server = server;
-                });
+        created() {
+            this.$parent.serverService.show(this.$route.params.id).then((server) => {
+                //If editing the RR server then go back
+                if(server.name === this.$parent.rets_rabbit.name){
+                    Materialize.toast('You can\'t edit the default Rets Rabbit server!', 4500, 'warning');
+                    this.$router.go(-1);
+                } else {
+                    this.server = server;
+                }
             }, (err) => {
-                next(false);
+                this.$router.go(-1);
             });
         },
         watch: {
             $route () {
-                this.server = {
-                    id: '',
-                    name: '',
-                    client_id: ''
-                };
-
-                let server = this.$parent.serverService.show(this.$route.params.id);
-
-                if(server)
+                let server = this.$parent.serverService.show(this.$route.params.id).then((server) => {
                     this.server = server;
-                else
+                }, (err) => {
                     this.$router.go(-1);
+                });
             }
         },
         methods: {
@@ -104,9 +99,10 @@
                     return;
                 }
 
-                this.$parent.serverService.update(this.server.id, this.server);
-
-                this.$router.replace('/servers');
+                this.$parent.serverService.update(this.server.id, this.server).then((server) =>{
+                    this.$parent.flash('success', 'Successfully updated server: ' + server.name);
+                    this.$router.replace('/servers');
+                });
             },
             deleteServer(){
                 swal({
@@ -116,6 +112,7 @@
                 }, (confirmed) => {
                     if(confirmed){
                         this.$parent.serverService.destroy(this.server.id).then(() => {
+                            this.$parent.flash('success', 'Deleted the server');
                             this.$router.replace('/servers');
                         }, () => {
                             swal('Uh oh', 'There was an error deleting this server', 'warning');

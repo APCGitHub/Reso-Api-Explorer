@@ -72,7 +72,8 @@
                     name: this.name,
                     auth_endpoint: this.auth_endpoint,
                     token_endpoint: this.token_endpoint
-                }).then(() => {
+                }).then((server) => {
+                    this.$parent.flash('success', 'Created your new server: ' + server.name);
                     this.$router.replace('/servers');
                 }, () => {
                     swal({
@@ -87,6 +88,4 @@
     }
 </script>
 
-<style>
-
-</style>
+<style lang="sass"></style>

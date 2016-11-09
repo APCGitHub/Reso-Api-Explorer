@@ -1,11 +1,11 @@
 <template>
     <div class="row">
         <div class="col s12">
-            <div class="section mb0">
+            <div class="section">
                 <div class="row mb0">
                     <div class="col s6 offset-s3">
-                        <h4 class="center-align">Your Servers</h4>
-                        <p class="center-align" v-show="servers.length < 1">You currently haven't created any servers. Click the "+" below to get started.</p>
+                        <h4 class="center-align mb0">Your Servers</h4>
+                        <p class="center-align mb0" v-show="servers.length < 1">You currently haven't created any servers. Click the "+" below to get started.</p>
                     </div>
                 </div>
             </div>
@@ -25,10 +25,10 @@
                                     <div class="card-action">
                                         <div class="row mb0">
                                             <div class="col s6">
-                                                <router-link :to="{name: 'explore', params: {id: server.id}}" tag="button" class="btn waves-effect waves-light teal lighten-1">Use</router-link>
+                                                <router-link :to="{name: 'explore', params: {id: server.id}}" tag="button" class="btn waves-effect waves-light teal thin-button lighten-1"><i class="fa fa-bolt" aria-hidden="true"></i>&nbsp;&nbsp;Use</router-link>
                                             </div>
                                             <div class="col s6">
-                                                <router-link :to="{name: 'servers.edit', params: {id: server.id}}" tag="button" class="btn waves-effect waves-light teal lighten-1 right">Edit</router-link>
+                                                <router-link :to="{name: 'servers.edit', params: {id: server.id}}" tag="button" class="btn waves-effect waves-light teal lighten-1 thin-button right"><i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;&nbsp;Edit</router-link>
                                             </div>
                                         </div>
                                     </div>
@@ -88,6 +88,26 @@
 
                 this.$parent.serverService.index().then((_servers) => {
                     this.servers = _servers;
+
+                    let rr_exists = false;
+
+                    //look through existing
+                    for(let i = 0; i < this.servers.length; i++){
+                        if(this.servers[i].name === this.$parent.rets_rabbit.name){
+                            rr_exists = true;
+                            break;
+                        }
+                    }
+
+                    //create it
+                    if(!rr_exists){
+                        this.$parent.serverService.store(this.$parent.rets_rabbit).then((server) => {
+                            this.$parent.flash('info', 'Created the default Rets Rabbit server.', 4500);
+                            this.$parent.serverService.index().then((servers) => {
+                                this.servers = servers;
+                            });
+                        });
+                    }
                 });
             }
         },
