@@ -30,22 +30,12 @@
     export default {
         data() {
             return {
-                siteName: config.APP_NAME,
-                rets_rabbit: {
-                    name: 'Rets Rabbit Test',
-                    client_id: '',
-                    client_secret: '',
-                    access_token: '',
-                    auth_endpoint: '',
-                    token_endpoint: ''
-                }
+                siteName: config.ENV.APP_NAME,
+                default_server: {}
             }
         },
         created() {
-            this.rets_rabbit.auth_endpoint = config.API_URL + 'api/oauth/authorize';
-            this.rets_rabbit.token_endpoint = config.API_URL + 'api/oauth/access_token';
-            this.rets_rabbit.client_id = config.CLIENT_ID || 'retsrabbit';
-            this.rets_rabbit.client_secret = config.CLIENT_SECRET || 'retsrabbit';
+            this.default_server = config.servers[0];
         },
         methods: {
             flash(type, message, duration) {
