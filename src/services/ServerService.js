@@ -18,7 +18,7 @@ export default class ServerService {
             let servers = localStorage.getItem(this.key);
 
             if(servers === null)
-                return [];
+                resolve([]);
 
             servers = JSON.parse(servers);
 
