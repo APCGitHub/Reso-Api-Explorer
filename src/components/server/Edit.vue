@@ -58,6 +58,7 @@
     import swal from 'sweetalert';
 
     export default {
+        serverService: null,
         data() {
             return {
                 server: {
@@ -68,7 +69,9 @@
             }
         },
         created() {
-            this.$parent.serverService.show(this.$route.params.id).then((server) => {
+            this.serverService = new ServerService();
+
+            this.serverService.show(this.$route.params.id).then((server) => {
                 //If editing the RR server then go back
                 if(server.name === this.$parent.rets_rabbit.name){
                     Materialize.toast('You can\'t edit the default Rets Rabbit server!', 4500, 'warning');
@@ -82,7 +85,7 @@
         },
         watch: {
             $route () {
-                let server = this.$parent.serverService.show(this.$route.params.id).then((server) => {
+                let server = this.serverService.show(this.$route.params.id).then((server) => {
                     this.server = server;
                 }, (err) => {
                     this.$router.go(-1);
@@ -99,8 +102,8 @@
                     return;
                 }
 
-                this.$parent.serverService.update(this.server.id, this.server).then((server) =>{
-                    this.$parent.flash('success', 'Successfully updated server: ' + server.name);
+                this.serverService.update(this.server.id, this.server).then((server) =>{
+                    this.$parent.flash('success', 'Successfully updated server: ' + server.name, 1500);
                     this.$router.replace('/servers');
                 });
             },
@@ -111,7 +114,7 @@
                     type: 'warning'
                 }, (confirmed) => {
                     if(confirmed){
-                        this.$parent.serverService.destroy(this.server.id).then(() => {
+                        this.serverService.destroy(this.server.id).then(() => {
                             this.$parent.flash('success', 'Deleted the server');
                             this.$router.replace('/servers');
                         }, () => {

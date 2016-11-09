@@ -50,15 +50,20 @@
 <script type="text/babel">
     import _ from 'lodash';
     import swal from 'sweetalert';
+    import config from '../../config/env';
+    import ServerService from '../../services/ServerService';
+    import Promise from 'es6-promise';
 
     export default {
+        serverService: null,
         data() {
             return {
-                code: '',
                 servers: [],
             }
         },
         created() {
+            this.serverService = new ServerService();
+
             this.loadServers();
         },
         methods: {
@@ -86,7 +91,7 @@
             loadServers() {
                 this.servers = [];
 
-                this.$parent.serverService.index().then((_servers) => {
+                this.serverService.index().then((_servers) => {
                     this.servers = _servers;
 
                     let rr_exists = false;
@@ -95,19 +100,53 @@
                     for(let i = 0; i < this.servers.length; i++){
                         if(this.servers[i].name === this.$parent.rets_rabbit.name){
                             rr_exists = true;
+                            this.updateRRServer();
                             break;
                         }
                     }
 
                     //create it
                     if(!rr_exists){
-                        this.$parent.serverService.store(this.$parent.rets_rabbit).then((server) => {
+                        this.serverService.store(this.$parent.rets_rabbit).then((server) => {
                             this.$parent.flash('info', 'Created the default Rets Rabbit server.', 4500);
-                            this.$parent.serverService.index().then((servers) => {
+
+                            this.serverService.index().then((servers) => {
                                 this.servers = servers;
                             });
                         });
                     }
+                });
+            },
+            updateRRServer() {
+                this.findRRServer().then((server) => {
+                    this.serverService.update(server.id, this.$parent.rets_rabbit).then(() => {
+                        this.$parent.flash('info', 'The Rets Rabbit demo server has been updated.');
+                    });
+                }, () => {
+                    this.$parent.flash('error', 'Could not find the default Rets Rabbit server.');
+                });
+            },
+            findRRServer() {
+                //Update the RR server in case any of the fields have changed
+                return new Promise((resolve, reject) => {
+                    this.serverService.index().then(servers => {
+                        let found = false, server;
+                        for(let i = 0, len = servers.length; i < len; i++){
+                            if(servers[i].name === this.$parent.rets_rabbit.name){
+                                found = true;
+                                server = servers[i];
+                                break;
+                            }
+
+                            if(found)
+                                break;
+                        }
+
+                        if(found)
+                            resolve(server);
+                        else
+                            reject();
+                    });
                 });
             }
         },

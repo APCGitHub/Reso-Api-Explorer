@@ -34,7 +34,7 @@
                                     <span class="error red-text darken-2" v-show="errors.has('token_endpoint')">{{ errors.first('token_endpoint') }}</span>
                                 </div>
                             </div>
-                            <div class="row">
+                            <div class="row mb0">
                                 <div class="col s12 center-align">
                                     <button :disabled="errors.any()" class="waves-effect waves-light btn">Create</button>
                                 </div>
@@ -48,7 +48,10 @@
 </template>
 
 <script type="text/babel">
+    import ServerService from '../../services/ServerService';
+
     export default {
+        serverService: null,
         data() {
             return {
                 client_id: '',
@@ -56,6 +59,9 @@
                 auth_endpoint: '',
                 token_endpoint: '',
             }
+        },
+        created() {
+            this.serverService = new ServerService();
         },
         methods: {
             validateBeforeSubmit(e) {
@@ -67,7 +73,7 @@
                     return;
                 }
 
-                this.$parent.serverService.store({
+                this.serverService.store({
                     client_id: this.client_id,
                     name: this.name,
                     auth_endpoint: this.auth_endpoint,
@@ -83,7 +89,6 @@
                     });
                 });
             }
-
         }
     }
 </script>

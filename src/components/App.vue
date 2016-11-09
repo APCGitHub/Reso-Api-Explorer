@@ -25,24 +25,27 @@
 
 <script type="text/babel">
     import serverService from '../services/ServerService';
+    import config from '../config/env';
 
     export default {
         data() {
             return {
-                siteName: 'ResoMD',
+                siteName: config.APP_NAME,
                 rets_rabbit: {
                     name: 'Rets Rabbit Test',
-                    client_id: 'retsrabbit',
-                    client_secret: 'retsrabbit',
+                    client_id: '',
+                    client_secret: '',
                     access_token: '',
                     auth_endpoint: '',
                     token_endpoint: ''
-                },
-                serverService: null
+                }
             }
         },
         created() {
-            this.serverService = new serverService();
+            this.rets_rabbit.auth_endpoint = config.API_URL + 'api/oauth/authorize';
+            this.rets_rabbit.token_endpoint = config.API_URL + 'api/oauth/access_token';
+            this.rets_rabbit.client_id = config.CLIENT_ID || 'retsrabbit';
+            this.rets_rabbit.client_secret = config.CLIENT_SECRET || 'retsrabbit';
         },
         methods: {
             flash(type, message, duration) {

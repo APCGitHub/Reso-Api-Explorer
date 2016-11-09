@@ -252,7 +252,8 @@
                     query_service: null,
                     map_service: null,
                     accesstoken_service: null,
-                    marker_service: null
+                    marker_service: null,
+                    server_service: null
                 },
                 example_queries: [],
                 show_queries: false,
@@ -283,11 +284,13 @@
         created() {
             let id = this.$route.params.id;
 
+            this.services.server_service = new serverService();
+
             //Query Service
             this.services.query_service = new queryService();
 
             //Server from id
-            this.$parent.serverService.show(id).then((server) => {
+            this.services.server_service.show(id).then((server) => {
                 //Bind the server
                 this.server = server;
 
@@ -328,7 +331,7 @@
                                 let resBody = res.body;
 
                                 //Try to update the server with the new access token
-                                this.$parent.serverService.update(this.server.id, {
+                                this.services.server_service.update(this.server.id, {
                                     access_token: resBody.access_token
                                 }).then((server) => {
                                     this.server = server;
