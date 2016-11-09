@@ -3,10 +3,9 @@ var path = require('path');
 module.exports = {
     context: __dirname + "/src",
     entry: "./index.js",
-
     output: {
-        filename: "bundle.js",
-        path: __dirname + "/build",
+        filename: "index.js",
+        path: __dirname + "/public/js",
     },
     module: {
         loaders: [
@@ -30,7 +29,7 @@ module.exports = {
     },
     resolve: {
         alias: {
-            vue: 'vue/dist/vue.js'
+            vue: 'vue/dist/vue.min.js'
         }
     }
 }
