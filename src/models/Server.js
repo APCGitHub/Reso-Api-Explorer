@@ -7,7 +7,12 @@ import config from '../config/env';
 export default class Server {
     constructor(data) {
         this.id = shortId.generate();
-        this.redirect_uri = config.APP_URL + '#/explore/' + this.id;
+        let _url = config.ENV.APP_URL;
+
+        if(_url.substring(-1) !== '/')
+            _url += '/';
+
+        this.redirect_uri = _url + '#/explore/' + this.id;
 
         //Initialize
         for(let i = 0; i < Server.fillable.length; i++){
