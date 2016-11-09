@@ -4230,241 +4230,11 @@
 
 	var _es6Promise2 = _interopRequireDefault(_es6Promise);
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	var _env = __webpack_require__(57);
 
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
+	var _env2 = _interopRequireDefault(_env);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	exports.default = {
 	    components: { Results: _Results2.default },
@@ -4531,7 +4301,21 @@
 	            if (_this.$route.query.code) {
 	                _this.code = _this.$route.query.code;
 
-	                if (_this.server.client_secret) {} else {
+	                if (_this.server.client_secret) {
+	                    _this.getToken(_this.server.client_secret).then(function () {
+	                        (0, _sweetalert2.default)({
+	                            title: 'Success',
+	                            text: 'Grabbed a new access token!',
+	                            type: 'success'
+	                        });
+	                    }, function () {
+	                        (0, _sweetalert2.default)({
+	                            title: 'Uh oh',
+	                            text: 'There was a problem getting the access token',
+	                            type: 'warning'
+	                        });
+	                    });
+	                } else {
 	                    (0, _sweetalert2.default)({
 	                        title: "Credentials",
 	                        text: "Please supply your client_secret.",
@@ -4760,24 +4544,24 @@
 	        getToken: function getToken(client_secret) {
 	            var _this4 = this;
 
-	            return new _es6Promise2.default(function (resolve, reject) {});
+	            return new _es6Promise2.default(function (resolve, reject) {
+	                _this4.services.accesstoken_service.getToken(client_secret, _this4.code).then(function (res) {
+	                    var resBody = res.body;
 
-	            this.services.accesstoken_service.getToken(client_secret, this.code).then(function (res) {
-	                var resBody = res.body;
+	                    //Try to update the server with the new access token
+	                    _this4.services.server_service.update(_this4.server.id, {
+	                        access_token: resBody.access_token
+	                    }).then(function (server) {
+	                        _this4.server = server;
 
-	                //Try to update the server with the new access token
-	                _this4.services.server_service.update(_this4.server.id, {
-	                    access_token: resBody.access_token
-	                }).then(function (server) {
-	                    _this4.server = server;
-
-	                    (0, _sweetalert2.default)('Success!', 'Retrieved a new access token.');
-	                }, function () {
-	                    (0, _sweetalert2.default)('Uh oh', 'There was an error updating the server.', 'warning');
+	                        resolve(1);
+	                    }, function () {
+	                        reject();
+	                    });
+	                }, function (err) {
+	                    console.log(err);
+	                    reject(err);
 	                });
-	            }, function (err) {
-	                var resBody = err.body;
-	                _sweetalert2.default.close();
 	            });
 	        }
 	    },
@@ -4788,12 +4572,244 @@
 	        url: function url() {
 	            var s = this.services.query_service.buildUrl(this.query_builder);
 
-	            s = this.api.url + 'v2/property?' + s;
+	            s = _env2.default.ENV.API_URL + 'v2/property?' + s;
 
 	            return s;
 	        }
 	    }
-	};
+	}; //
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
 
 /***/ },
 /* 16 */
@@ -7282,7 +7298,11 @@
 	        (0, _classCallCheck3.default)(this, Server);
 
 	        this.id = _shortid2.default.generate();
-	        this.redirect_uri = _env2.default.APP_URL + '#/explore/' + this.id;
+	        var _url = _env2.default.ENV.APP_URL;
+
+	        if (_url.substring(-1) !== '/') _url += '/';
+
+	        this.redirect_uri = _url + '#/explore/' + this.id;
 
 	        //Initialize
 	        for (var i = 0; i < Server.fillable.length; i++) {
@@ -7679,12 +7699,17 @@
 	    value: true
 	});
 	exports.default = {
-	    APP_NAME: 'ResoMD',
-	    APP_URL: 'http://resomd.dev/',
-	    API_URL: 'http://retsrabbit.app/',
-	    APP_ENV: 'local',
-	    CLIENT_ID: 'E1bi6hyy7nLxjlicqE2cDhyUykmA11KPoK9cSbr',
-	    CLIENT_SECRET: 'x8EZaK74sYmkQLOk4CJBhwLJP0McajzKro6RY6j'
+	    ENV: {
+	        APP_NAME: 'ResoMD', //Name of the site
+	        APP_URL: 'http://resomd.dev/', //The site's url
+	        API_URL: 'http://retsrabbit.app/api/' },
+	    servers: [{
+	        name: 'Rets Rabbit Demo',
+	        token_endpoint: 'http://retsrabbit.app/api/oauth/access_token',
+	        auth_endpoint: 'http://retsrabbit.app/api/oauth/authorize',
+	        client_id: 'E1bi6hyy7nLxjlicqE2cDhyUykmA11KPoK9cSbr',
+	        client_secret: 'x8EZaK74sYmkQLOk4CJBhwLJP0McajzKro6RY6j'
+	    }]
 	};
 
 /***/ },
@@ -37498,7 +37523,7 @@
 
 	                //look through existing
 	                for (var i = 0; i < _this.servers.length; i++) {
-	                    if (_this.servers[i].name === _this.$parent.rets_rabbit.name) {
+	                    if (_this.servers[i].name === _this.$parent.default_server.name) {
 	                        rr_exists = true;
 	                        _this.updateRRServer();
 	                        break;
@@ -37507,7 +37532,7 @@
 
 	                //create it
 	                if (!rr_exists) {
-	                    _this.serverService.store(_this.$parent.rets_rabbit).then(function (server) {
+	                    _this.serverService.store(_this.$parent.default_server).then(function (server) {
 	                        _this.$parent.flash('info', 'Created the default Rets Rabbit server.', 4500);
 
 	                        _this.serverService.index().then(function (servers) {
@@ -37521,7 +37546,7 @@
 	            var _this2 = this;
 
 	            this.findRRServer().then(function (server) {
-	                _this2.serverService.update(server.id, _this2.$parent.rets_rabbit).then(function () {
+	                _this2.serverService.update(server.id, _this2.$parent.default_server).then(function () {
 	                    _this2.$parent.flash('info', 'The Rets Rabbit demo server has been updated.');
 	                });
 	            }, function () {
@@ -37537,7 +37562,7 @@
 	                    var found = false,
 	                        server = void 0;
 	                    for (var i = 0, len = servers.length; i < len; i++) {
-	                        if (servers[i].name === _this3.$parent.rets_rabbit.name) {
+	                        if (servers[i].name === _this3.$parent.default_server.name) {
 	                            found = true;
 	                            server = servers[i];
 	                            break;
@@ -38344,7 +38369,7 @@
 
 	        this.serverService.show(this.$route.params.id).then(function (server) {
 	            //If editing the RR server then go back
-	            if (server.name === _this.$parent.rets_rabbit.name) {
+	            if (server.name === _this.$parent.default_server.name) {
 	                Materialize.toast('You can\'t edit the default Rets Rabbit server!', 4500, 'warning');
 	                _this.$router.go(-1);
 	            } else {
@@ -38754,7 +38779,7 @@
 
 
 	// module
-	exports.push([module.id, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+	exports.push([module.id, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 	// exports
 
@@ -38808,22 +38833,12 @@
 	exports.default = {
 	    data: function data() {
 	        return {
-	            siteName: _env2.default.APP_NAME,
-	            rets_rabbit: {
-	                name: 'Rets Rabbit Test',
-	                client_id: '',
-	                client_secret: '',
-	                access_token: '',
-	                auth_endpoint: '',
-	                token_endpoint: ''
-	            }
+	            siteName: _env2.default.ENV.APP_NAME,
+	            default_server: {}
 	        };
 	    },
 	    created: function created() {
-	        this.rets_rabbit.auth_endpoint = _env2.default.API_URL + 'api/oauth/authorize';
-	        this.rets_rabbit.token_endpoint = _env2.default.API_URL + 'api/oauth/access_token';
-	        this.rets_rabbit.client_id = _env2.default.CLIENT_ID || 'retsrabbit';
-	        this.rets_rabbit.client_secret = _env2.default.CLIENT_SECRET || 'retsrabbit';
+	        this.default_server = _env2.default.servers[0];
 	    },
 
 	    methods: {
