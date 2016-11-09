@@ -442,9 +442,11 @@
                         this.query.auth_error = true;
                         swal('Authenitcation Error', 'It looks like your access_token may have become invalid.', 'warning');
 
-                        $('html, body').animate({
-                            scrollTop: $('#refresh-token-button').offset().top
-                        }, 400);
+                        setTimeout(() => {
+                            $('html, body').animate({
+                                scrollTop: $('#token-refresh-button').offset().top
+                            }, 400);
+                        }, 300);
                     }
                 });
             },
