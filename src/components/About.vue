@@ -21,7 +21,7 @@
                     <div class="section mt-sm">
                         <h5 class="center-align">Designed by developers. For developers.</h5>
                         <div class="center-align mt-lg">
-                            <router-link to="/explore" class="waves-effect waves-light btn">Explore</router-link>
+                            <router-link to="/servers" class="waves-effect waves-light btn">Servers</router-link>
                         </div>
                     </div>
                 </div>
