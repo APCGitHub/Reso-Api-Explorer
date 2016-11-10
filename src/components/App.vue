@@ -30,21 +30,10 @@
     export default {
         data() {
             return {
-                siteName: config.ENV.APP_NAME,
-                default_server: {}
+                siteName: config.ENV.APP_NAME
             }
-        },
-        created() {
-            this.default_server = config.servers[0];
         },
         methods: {
-            flash(type, message, duration) {
-                if(!duration){
-                    duration = 3000;
-                }
-
-                Materialize.toast(message, duration, type);
-            }
         }
     }
 </script>
