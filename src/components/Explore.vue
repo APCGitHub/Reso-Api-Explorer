@@ -184,7 +184,15 @@
                         </div>
                         <div class="card">
                             <div class="card-content">
-                                <div class="card-title">Query</div>
+                                <div class="row">
+                                    <div class="col s6">
+                                        <div class="card-title">Query</div>
+                                    </div>
+                                    <div class="col s6">
+                                        <router-link v-if="server" :to="{name: 'servers.edit', params: {id: server.id}}" tag="button" class="right waves-effect waves-light btn thin-button">Edit Server</router-link>
+                                        <button v-if="!server" class="right waves-effect waves-light btn thin-button">Edit Server</button>
+                                    </div>
+                                </div>
                                 <div class="row">
                                     <div class="col s12">
                                         <pre class="grey lighten-3 p-sm">{{url}}</pre>
@@ -238,6 +246,7 @@
     import accessTokenSerivce from '../services/AccessTokenService';
     import serverService from '../services/ServerService';
     import Results from './Results.vue';
+    import Server from '../models/Server';
     import _ from 'lodash';
     import $ from 'jquery';
     import swal from 'sweetalert';
@@ -248,7 +257,7 @@
         components: {Results},
         data() {
             return {
-                server: {},
+                server: null,
                 code: null,
                 services: {
                     query_service: null,
@@ -292,7 +301,7 @@
             this.services.query_service = new queryService();
 
             //Server from id
-            this.services.server_service.show(id).then((server) => {
+            Server.find(id).then((server) => {
                 //Bind the server
                 this.server = server;
 
@@ -307,6 +316,7 @@
                 if(this.$route.query.code){
                     this.code = this.$route.query.code;
 
+                    //If this is a default server
                     if(this.server.client_secret){
                         this.getToken(this.server.client_secret).then(() => {
                             swal({
@@ -314,6 +324,14 @@
                                 text: 'Grabbed a new access token!',
                                 type: 'success'
                             });
+
+                            //Get rid of the code from the url
+                            let url = window.location.href;
+                            let i = url.indexOf('?code');
+
+                            url = url.substring(0, i);
+
+                            window.location = url;
                         }, () => {
                             swal({
                                 title: 'Uh oh',
@@ -322,6 +340,7 @@
                             });
                         });
                     } else {
+                        //This is not a default server so ask for a secret
                         swal({
                             title: "Credentials",
                             text: "Please supply your client_secret.",
@@ -332,11 +351,13 @@
                             inputPlaceholder: "secret"
                         },
                         (client_secret) => {
+                            //If they cancel then back 'em out of there real good
                             if (client_secret === false) {
                                 this.$router.replace('/servers');
                                 return false;
                             }
 
+                            //If empty make sure they try again
                             if (client_secret === "") {
                                 swal.showInputError("You need to write something!");
                                 return false
@@ -344,7 +365,27 @@
 
                             //See what we can do about getting a new access_token
                             if(this.services.accesstoken_service){
+                                this.getToken(client_secret).then(() => {
+                                    swal({
+                                        title: 'Success',
+                                        text: 'Grabbed a new access token!',
+                                        type: 'success'
+                                    });
 
+                                    //Get rid of the code from the url
+                                    let url = window.location.href;
+                                    let i = url.indexOf('?code');
+
+                                    url = url.substring(0, i);
+
+                                    window.location = url;
+                                }, () => {
+                                    swal({
+                                        title: 'Uh oh',
+                                        text: 'There was a problem getting the access token',
+                                        type: 'warning'
+                                    });
+                                });
                             }
                         });
                     }
@@ -376,12 +417,12 @@
                 this.map.instance = map;
                 this.services.marker_service = new markerService(this.map.instance);
 
-                google.maps.event.addDomListener(document.getElementById('map'), "resize", () => {
-                    console.log('resize');
-                    var center = this.map.instance.getCenter();
-                    google.maps.event.trigger(this.map.instance, "resize");
-                    this.map.instance.setCenter(center);
-                });
+//                google.maps.event.addDomListener(document.getElementById('map'), "resize", () => {
+//                    console.log('resize');
+//                    var center = this.map.instance.getCenter();
+//                    google.maps.event.trigger(this.map.instance, "resize");
+//                    this.map.instance.setCenter(center);
+//                });
             });
 
             //Handle query click scroll
@@ -541,7 +582,7 @@
                         let resBody = res.body;
 
                         //Try to update the server with the new access token
-                        this.services.server_service.update(this.server.id, {
+                        this.server.update({
                             access_token: resBody.access_token
                         }).then((server) => {
                             this.server = server;
@@ -562,11 +603,19 @@
                 return _.chunk(this.example_queries, 3);
             },
             url() {
-                let s = this.services.query_service.buildUrl(this.query_builder);
+                if(!this.server){
+                    return '';
+                } else {
+                    let base = this.server.data_endpoint;
+                    let s = this.services.query_service.buildUrl(this.query_builder);
 
-                s = config.ENV.API_URL + 'v2/property?' + s;
+                    if(base.substring(base.length - 1) !== '/')
+                        base += '/';
 
-                return s;
+                    base += 'property?' + s;
+
+                    return base;
+                }
             }
         }
     }
