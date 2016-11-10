@@ -15,8 +15,13 @@ This tool serves as a simple and intuitive interface for developers allowing the
  $ bower install
  ```
  
- ## Build the App
+ ## Environment Setup
+ This app expects there to be an env.js file in the root of the project.
+ For your convenience there is an example env file called env.example.js.
+ Feel free to modify and use this for your own env.js.
  
+ ## Build the App
+
  1. Run webpack: builds the src Vue files into browser compatible JS
  
  ```shell
