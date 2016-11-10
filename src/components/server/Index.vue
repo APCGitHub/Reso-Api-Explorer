@@ -20,6 +20,7 @@
                                         <p><span class="grey-text">Client ID:</span> {{server.client_id}}</p>
                                         <p class="mt-sm"><span @click="authHelp" class="help grey-text">Auth:</span> {{server.auth_endpoint}}</p>
                                         <p class="mt-sm"><span @click="tokenHelp" class="help grey-text">Token:</span> {{server.token_endpoint}}</p>
+                                        <p class="mt-sm"><span @click="dataHelp" class="help grey-text">Data:</span> {{server.data_endpoint}}</p>
                                         <p class="mt-sm"><span @click="redirectUriHelp" class="help grey-text">Redirect URI</span>: {{server.redirect_uri}}</p>
                                     </div>
                                     <div class="card-action">
@@ -52,6 +53,8 @@
     import swal from 'sweetalert';
     import config from '../../config/env';
     import ServerService from '../../services/ServerService';
+    import FlashService from '../../services/FlashService';
+    import Server from '../../models/Server';
     import Promise from 'es6-promise';
 
     export default {
@@ -63,7 +66,8 @@
         },
         created() {
             this.serverService = new ServerService();
-
+        },
+        mounted() {
             this.loadServers();
         },
         methods: {
@@ -81,6 +85,13 @@
                     type: 'info'
                 });
             },
+            dataHelp() {
+                swal({
+                    title: 'Datasystem',
+                    text: 'This is the url which the explorer needs to hit to grab listing data.',
+                    type: 'info'
+                });
+            },
             redirectUriHelp() {
                 swal({
                     title: 'Redirect URI',
@@ -91,62 +102,36 @@
             loadServers() {
                 this.servers = [];
 
-                this.serverService.index().then((_servers) => {
-                    this.servers = _servers;
+                Server.all().then(servers => {
+                    this.servers = servers;
 
-                    let rr_exists = false;
+                    return servers;
+                }).then(servers => {
+                    if(!servers.length || servers.length < config.servers.length){
+                        FlashService.flash('info', 'Creating default servers');
 
-                    //look through existing
-                    for(let i = 0; i < this.servers.length; i++){
-                        if(this.servers[i].name === this.$parent.default_server.name){
-                            rr_exists = true;
-                            this.updateRRServer();
-                            break;
-                        }
-                    }
-
-                    //create it
-                    if(!rr_exists){
-                        this.serverService.store(this.$parent.default_server).then((server) => {
-                            this.$parent.flash('info', 'Created the default Rets Rabbit server.', 4500);
-
-                            this.serverService.index().then((servers) => {
+                        //Create the default servers
+                        this.serverService.createDefaultServers().then(res => {
+                            Server.all().then(servers => {
+                                FlashService.flash('success', 'Created the default servers!');
                                 this.servers = servers;
                             });
+                        }).catch(err => {
+                            FlashService.flash('error', err);
+                        });
+                    } else {
+                        FlashService.flash('info', 'Updating default servers');
+
+                        //Create the default servers
+                        this.serverService.updateDefaultServers().then(res => {
+                            Server.all().then(servers => {
+                                FlashService.flash('success', 'Updated the default servers!');
+                                this.servers = servers;
+                            });
+                        }).catch(err => {
+                            FlashService.flash('error', err);
                         });
                     }
-                });
-            },
-            updateRRServer() {
-                this.findRRServer().then((server) => {
-                    this.serverService.update(server.id, this.$parent.default_server).then(() => {
-                        this.$parent.flash('info', 'The Rets Rabbit demo server has been updated.');
-                    });
-                }, () => {
-                    this.$parent.flash('error', 'Could not find the default Rets Rabbit server.');
-                });
-            },
-            findRRServer() {
-                //Update the RR server in case any of the fields have changed
-                return new Promise((resolve, reject) => {
-                    this.serverService.index().then(servers => {
-                        let found = false, server;
-                        for(let i = 0, len = servers.length; i < len; i++){
-                            if(servers[i].name === this.$parent.default_server.name){
-                                found = true;
-                                server = servers[i];
-                                break;
-                            }
-
-                            if(found)
-                                break;
-                        }
-
-                        if(found)
-                            resolve(server);
-                        else
-                            reject();
-                    });
                 });
             }
         },
