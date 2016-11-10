@@ -208,6 +208,7 @@
     import Results from './Results.vue';
     import FilterInput from './explorer/FilterInput.vue';
     import OrderbyInput from './explorer/OrderbyInput.vue';
+    import Map from './explorer/Map.vue';
     import Server from '../models/Server';
     import _ from 'lodash';
     import $ from 'jquery';
@@ -216,7 +217,7 @@
     import config from '../config/env';
 
     export default {
-        components: {Results, FilterInput, OrderbyInput},
+        components: {Results, FilterInput, OrderbyInput, Map},
         data() {
             return {
                 server: null,
@@ -383,13 +384,6 @@
             this.services.map_service.load((map) => {
                 this.map.instance = map;
                 this.services.marker_service = new markerService(this.map.instance);
-
-//                google.maps.event.addListener(this.map.instance, "bounds_changed", () => {
-//                    console.log('resize');
-//                    var center = this.map.instance.getCenter();
-//                    google.maps.event.trigger(this.map.instance, "resize");
-//                    this.map.instance.setCenter(center);
-//                });
             });
 
             //Handle query click scroll
@@ -533,6 +527,7 @@
              * Toggle the size of the map
              */
             toggleMapSize() {
+                this.map.center = this.map.instance.getCenter();
                 this.map.expanded = !this.map.expanded;
 
                 setTimeout(() => {
@@ -541,6 +536,8 @@
                     offset += -100;
 
                     google.maps.event.trigger(this.map.instance, 'resize');
+
+                    this.map.instance.setCenter(this.map.center);
 
                     $('html, body').animate({
                         scrollTop: offset
@@ -608,4 +605,7 @@
     .map-help
         small
             font-size: 0.9em
+
+    .query-col
+        transition: width 0.3s ease;
 </style>
