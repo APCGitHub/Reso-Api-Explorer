@@ -185,10 +185,10 @@
                         <div class="card">
                             <div class="card-content">
                                 <div class="row">
-                                    <div class="col s6">
+                                    <div class="col s6" :class="{'s12': !show_edit_button}">
                                         <div class="card-title">Query</div>
                                     </div>
-                                    <div class="col s6">
+                                    <div class="col s6" v-show="show_edit_button">
                                         <router-link v-if="server" :to="{name: 'servers.edit', params: {id: server.id}}" tag="button" class="right waves-effect waves-light btn thin-button">Edit Server</router-link>
                                         <button v-if="!server" class="right waves-effect waves-light btn thin-button">Edit Server</button>
                                     </div>
@@ -286,10 +286,7 @@
                     results: null,
                     round_trip: null
                 },
-                api: {
-                    access_token: 'jowz5ihuQST0zsj3JdBPz0qGBgEFXQspipt34Qd9',
-                    url: 'http://retsrabbit.app/api/'
-                }
+                show_edit_button: true
             }
         },
         created() {
@@ -304,6 +301,13 @@
             Server.find(id).then((server) => {
                 //Bind the server
                 this.server = server;
+
+                for(let i = 0; i < config.servers.length; i++){
+                    if(config.servers[i].id === this.server.id){
+                        this.show_edit_button = false;
+                        break;
+                    }
+                }
 
                 /**
                  * Instantiate the services
