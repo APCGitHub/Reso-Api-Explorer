@@ -50,27 +50,7 @@
                                     </div>
                                     <transition-group name="list" tag="div">
                                         <div class="row" v-for="(filter, index) in query_builder.filter" :key="index">
-                                            <div class="valign-wrapper">
-                                                <div class="col s12 m9">
-                                                    <div class="input-field">
-                                                        <input v-validate data-rules="required" :class="{'invalid': errors.has('filter_' + index)}" v-model="query_builder.filter[index].value" id="filter" :name="'filter_' + index" type="text" placeholder="ListPrice ge 100000">
-                                                        <label class="active" for="filter">$filter</label>
-                                                        <span class="error red-text darken-2" v-show="errors.has('filter_' + index)">{{ errors.first('filter_' + index) }}</span>
-                                                    </div>
-                                                </div>
-                                                <div class="col s12 m3">
-                                                    <button @click="removeFilter(index)" class="waves-effect waves-light red lighten-2 btn valign right">
-                                                        <i class="fa fa-trash" aria-hidden="true"></i>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                            <div class="input-field col s12 m4 offset-m4" v-if="(index+1) != query_builder.filter.length">
-                                                <select :name="'join_' + index" v-model="query_builder.filter[index].join" class="browser-default">
-                                                    <option value=""></option>
-                                                    <option value="and">and</option>
-                                                    <option value="or">or</option>
-                                                </select>
-                                            </div>
+                                            <filter-input :data="query_builder.filter[index]" :length="query_builder.filter.length" :index="index" v-on:filterDeleted="removeFilter" event-name="filterDeleted" :name="'filter_' + index"></filter-input>
                                         </div>
                                     </transition-group>
                                     <div class="row">
@@ -89,25 +69,7 @@
                                     <div class="divider"></div>
                                     <transition-group name="list" tag="div">
                                         <div class="row" :key="index" :class="{'mt-md': index == 0}" v-for="(orderby, index) in query_builder.orderby">
-                                            <div class="valign-wrapper">
-                                            <div class="input-field col s5">
-                                                <input v-validate data-rules="required" type="text" id="orderby" :name="'orderby_' + index" v-model="query_builder.orderby[index].value">
-                                                <label class="active" for="orderby">$orderby</label>
-                                                <span class="error red-text darken-2" v-show="errors.has('orderby_' + index)">{{ errors.first('orderby_' + index) }}</span>
-                                            </div>
-                                            <div class="input-field col s4">
-                                                <select class="browser-default" v-model="query_builder.orderby[index].direction">
-                                                    <option></option>
-                                                    <option value="asc">asc</option>
-                                                    <option valu="desc">desc</option>
-                                                </select>
-                                            </div>
-                                            <div class="col s3">
-                                                <button @click="removeOrderby(index)" class="waves-effect waves-light red lighten-2 btn valign right">
-                                                    <i class="fa fa-trash" aria-hidden="true"></i>
-                                                </button>
-                                            </div>
-                                        </div>
+                                            <orderby-input v-on:orderbyDeleted="removeOrderby" event-name="orderbyDeleted" :index="index" :data="query_builder.orderby[index]" :name="'orderby_' + index"></orderby-input>
                                         </div>
                                     </transition-group>
                                     <div class="row mt-md">
@@ -244,6 +206,8 @@
     import accessTokenSerivce from '../services/AccessTokenService';
     import serverService from '../services/ServerService';
     import Results from './Results.vue';
+    import FilterInput from './explorer/FilterInput.vue';
+    import OrderbyInput from './explorer/OrderbyInput.vue';
     import Server from '../models/Server';
     import _ from 'lodash';
     import $ from 'jquery';
@@ -252,7 +216,7 @@
     import config from '../config/env';
 
     export default {
-        components: {Results},
+        components: {Results, FilterInput, OrderbyInput},
         data() {
             return {
                 server: null,
@@ -482,7 +446,6 @@
                     this.services.marker_service.plotMarkers(this.query.results.value);
                 }, (res) => {
                     let resBody = res.body;
-                    console.log(resBody);
 
                     this.query.searching = false;
                     this.query.results = resBody;
@@ -546,10 +509,13 @@
              * Add an orderby
              */
             addOrderby(){
-                this.query_builder.orderby.push({
+                let orderbys = this.query_builder.orderby;
+                orderbys.push({
                     value: '',
                     direction: 'asc'
                 });
+
+                this.query_builder = Object.assign({}, this.query_builder, {orderby: orderbys});
             },
             /**
              * This method grabs an auth code from the authorizer if granted access
@@ -621,6 +587,11 @@
 
                     return base;
                 }
+            }
+        },
+        events: {
+            'orderby.delete'(id) {
+                console.log(id);
             }
         }
     }
