@@ -29,9 +29,16 @@
                             </div>
                             <div class="row">
                                 <div class="input-field col s12">
-                                    <input placeholder="http://api.com/api/oauth/access_token" name="client_id" type="text" id="token_endpoint" v-model="token_endpoint" v-validate.initial="token_endpoint" data-rules="required" :class="{'invalid': errors.has('token_endpoint')}">
+                                    <input placeholder="http://api.com/api/oauth/access_token" name="token_endpoint" type="text" id="token_endpoint" v-model="token_endpoint" v-validate.initial="token_endpoint" data-rules="required" :class="{'invalid': errors.has('token_endpoint')}">
                                     <label class="active" for="token_endpoint">Token Endpoint</label>
                                     <span class="error red-text darken-2" v-show="errors.has('token_endpoint')">{{ errors.first('token_endpoint') }}</span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="input-field col s12">
+                                    <input placeholder="http://api.com/api/oauth/access_token" name="data_endpoint" type="text" id="data_endpoint" v-model="data_endpoint" v-validate.initial="data_endpoint" data-rules="required" :class="{'invalid': errors.has('data_endpoint')}">
+                                    <label class="active" for="data_endpoint">Data Endpoint</label>
+                                    <span class="error red-text darken-2" v-show="errors.has('data_endpoint')">{{ errors.first('data_endpoint') }}</span>
                                 </div>
                             </div>
                             <div class="row mb0">
@@ -48,7 +55,8 @@
 </template>
 
 <script type="text/babel">
-    import ServerService from '../../services/ServerService';
+    import FlashService from '../../services/FlashService';
+    import Server from '../../models/Server';
 
     export default {
         serverService: null,
@@ -58,30 +66,32 @@
                 name: '',
                 auth_endpoint: '',
                 token_endpoint: '',
+                data_endpoint: ''
             }
         },
         created() {
-            this.serverService = new ServerService();
+
         },
         methods: {
             validateBeforeSubmit(e) {
-                this.$validator.validateAll();
-
                 e.preventDefault();
+
+                this.$validator.validateAll();
 
                 if (this.errors.any()) {
                     return;
                 }
 
-                this.serverService.store({
-                    client_id: this.client_id,
+                Server.create({
                     name: this.name,
+                    client_id: this.client_id,
+                    token_endpoint: this.token_endpoint,
                     auth_endpoint: this.auth_endpoint,
-                    token_endpoint: this.token_endpoint
+                    data_endpoint: this.data_endpoint
                 }).then((server) => {
-                    this.$parent.flash('success', 'Created your new server: ' + server.name);
+                    FlashService.flash('success', 'Created your new server: ' + server.name);
                     this.$router.replace('/servers');
-                }, () => {
+                }).catch(() => {
                     swal({
                         title: 'Uh oh',
                         text: 'There was an error creating your server. Please try again.',
