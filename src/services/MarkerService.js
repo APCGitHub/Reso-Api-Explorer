@@ -9,7 +9,6 @@ export default class MarkerService {
     }
 
     plotMarkers(listings){
-        console.log(listings);
         let markers = [];
         let bounds = new google.maps.LatLngBounds();
 
