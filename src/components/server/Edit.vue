@@ -31,8 +31,15 @@
                             <div class="row">
                                 <div class="input-field col s12">
                                     <input name="token_endpoint" type="text" id="token_endpoint" v-model="server.token_endpoint" v-validate.initial="server.token_endpoint" data-rules="required" :class="{'invalid': errors.has('server.token_endpoint')}">
-                                    <label for="token_endpoint" class="active">Auth Endpoint</label>
+                                    <label for="token_endpoint" class="active">Token Endpoint</label>
                                     <span class="error red-text darken-2" v-show="errors.has('server.token_endpoint')">{{ errors.first('server.token_endpoint') }}</span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="input-field col s12">
+                                    <input name="token_endpoint" type="text" id="data_endpoint" v-model="server.data_endpoint" v-validate.initial="server.data_endpoint" data-rules="required" :class="{'invalid': errors.has('server.data_endpoint')}">
+                                    <label for="data_endpoint" class="active">Data Endpoint</label>
+                                    <span class="error red-text darken-2" v-show="errors.has('server.data_endpoint')">{{ errors.first('server.data_endpoint') }}</span>
                                 </div>
                             </div>
                             <div class="row mb0">
@@ -55,7 +62,10 @@
 
 <script style="text/babel">
     import ServerService from '../../services/ServerService';
+    import FlashService from '../../services/FlashService';
+    import Server from '../../models/Server';
     import swal from 'sweetalert';
+    import Config from '../../config/env';
 
     export default {
         serverService: null,
@@ -64,30 +74,36 @@
                 server: {
                     id: '',
                     name: '',
-                    client_id: ''
+                    client_id: '',
+                    token_endpoint: '',
+                    data_endpoint: '',
+                    auth_endpoint: '',
                 }
             }
         },
         created() {
             this.serverService = new ServerService();
 
-            this.serverService.show(this.$route.params.id).then((server) => {
-                //If editing the RR server then go back
-                if(server.name === this.$parent.default_server.name){
-                    Materialize.toast('You can\'t edit the default Rets Rabbit server!', 4500, 'warning');
-                    this.$router.go(-1);
-                } else {
-                    this.server = server;
+            Server.find(this.$route.params.id).then(server => {
+                let _servers = Config.servers;
+
+                for(let i = 0; i < _servers.length; i++){
+                    if(server.id === _servers[i].id){
+                        FlashService.flash('warning', 'You can\'t edit the default Rets Rabbit server!', 3000);
+                        this.$router.go(-1);
+                    }
                 }
-            }, (err) => {
+
+                this.server = server;
+            }).catch(err => {
                 this.$router.go(-1);
             });
         },
         watch: {
             $route () {
-                let server = this.serverService.show(this.$route.params.id).then((server) => {
+                Server.find(this.$route.params.id).then(server => {
                     this.server = server;
-                }, (err) => {
+                }).catch(err => {
                     this.$router.go(-1);
                 });
             }
@@ -102,9 +118,11 @@
                     return;
                 }
 
-                this.serverService.update(this.server.id, this.server).then((server) =>{
-                    this.$parent.flash('success', 'Successfully updated server: ' + server.name, 1500);
-                    this.$router.replace('/servers');
+                this.server.update(this.server).then(server => {
+                    FlashService.flash('success', 'Successfully updated server: ' + server.name);
+                    this.$router.go(-1);
+                }).catch(err => {
+                    FlashService.flash('error', 'Could not update this server. Please try again');
                 });
             },
             deleteServer(){
@@ -114,10 +132,10 @@
                     type: 'warning'
                 }, (confirmed) => {
                     if(confirmed){
-                        this.serverService.destroy(this.server.id).then(() => {
-                            this.$parent.flash('success', 'Deleted the server');
+                        this.server.destroy().then(() => {
+                            FlashService.flash('success', 'Deleted the server');
                             this.$router.replace('/servers');
-                        }, () => {
+                        }).catch(() => {
                             swal('Uh oh', 'There was an error deleting this server', 'warning');
                         });
                     }
