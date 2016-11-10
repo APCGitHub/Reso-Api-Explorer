@@ -112,11 +112,13 @@ export default class QueryService {
             s += '$filter=';
 
             _.forEach(queryObject.filter, (filter, index) => {
-                s += filter.value;
+                if(filter.value){
+                    s += filter.value;
 
-                //only add the join if not the last one
-                if((index + 1) < queryObject.filter.length)
-                    s += " " + filter.join + " ";
+                    //only add the join if not the last one
+                    if((index + 1) < queryObject.filter.length)
+                        s += " " + filter.join + " ";
+                }
             });
         }
 
