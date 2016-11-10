@@ -447,7 +447,6 @@
                     this.services.marker_service.plotMarkers(this.query.results.value);
                 }, (res) => {
                     let resBody = res.body;
-                    console.log(resBody);
 
                     this.query.searching = false;
                     this.query.results = resBody;
@@ -516,8 +515,6 @@
                     value: '',
                     direction: 'asc'
                 });
-
-                console.log(orderbys);
 
                 this.query_builder = Object.assign({}, this.query_builder, {orderby: orderbys});
             },
