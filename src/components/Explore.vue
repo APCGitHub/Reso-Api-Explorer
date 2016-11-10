@@ -163,12 +163,10 @@
                                 <div class="row mb0">
                                     <div class="col s12">
                                         <span class="card-title">Map</span>
-                                        <!--
                                         <button class="waves-effect waves-light btn right" @click="toggleMapSize">
                                             <span v-show="map.expanded">Shrink</span>
                                             <span v-show="!map.expanded">Expand</span>
                                         </button>
-                                        -->
                                     </div>
                                 </div>
                                 <div class="map-help">
@@ -269,6 +267,7 @@
                 example_queries: [],
                 show_queries: false,
                 map: {
+                    center: {},
                     expanded: false,
                     instance: null
                 },
@@ -421,7 +420,7 @@
                 this.map.instance = map;
                 this.services.marker_service = new markerService(this.map.instance);
 
-//                google.maps.event.addDomListener(document.getElementById('map'), "resize", () => {
+//                google.maps.event.addListener(this.map.instance, "bounds_changed", () => {
 //                    console.log('resize');
 //                    var center = this.map.instance.getCenter();
 //                    google.maps.event.trigger(this.map.instance, "resize");
@@ -574,6 +573,8 @@
                     let offset = $('#map-col').offset().top;
 
                     offset += -100;
+
+                    google.maps.event.trigger(this.map.instance, 'resize');
 
                     $('html, body').animate({
                         scrollTop: offset
