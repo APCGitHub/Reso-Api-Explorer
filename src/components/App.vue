@@ -25,27 +25,19 @@
 
 <script type="text/babel">
     import serverService from '../services/ServerService';
+    import GoogleMapsService from '../services/GoogleMaps';
     import config from '../config/env';
 
     export default {
         data() {
             return {
                 siteName: config.ENV.APP_NAME,
-                default_server: {}
             }
         },
         created() {
-            this.default_server = config.servers[0];
+            GoogleMapsService.init();
         },
-        methods: {
-            flash(type, message, duration) {
-                if(!duration){
-                    duration = 3000;
-                }
-
-                Materialize.toast(message, duration, type);
-            }
-        }
+        methods: {}
     }
 </script>
 
