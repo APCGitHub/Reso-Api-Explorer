@@ -15,15 +15,23 @@ export default class GoogleMapsService {
 
         this.map = null;
 
+        this.loaded = false;
+    }
+
+    static init() {
         GoogleMaps.LIBRARIES = ['geometry', 'drawing'];
 
         GoogleMaps.KEY = 'AIzaSyAAVbYD7I7G9WBR1vibPL1jNPq5l9kE5cM';
     }
 
     load(cb) {
-        GoogleMaps.load(google => {
-            this.map = new google.maps.Map(this.el, this.options);
-            cb(this.map);
-        });
+        if(!this.loaded){
+            this.loaded = true;
+
+            GoogleMaps.load(google => {
+                this.map = new google.maps.Map(this.el, this.options);
+                cb(this.map, google);
+            });
+        }
     }
 }
