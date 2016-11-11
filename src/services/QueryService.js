@@ -99,7 +99,7 @@ export default class QueryService {
      */
     buildUrl(queryObject) {
         let s = '';
-        let pieces = [0, 0, 0, 0, 0]; //select, filter, orderby, top, skip
+        let pieces = [0, 0, 0, 0, 0, 0]; //select, filter, shapes, orderby, top, skip
 
         //$select
         if(queryObject.select){
@@ -108,7 +108,7 @@ export default class QueryService {
         }
 
         //$filter
-        if(queryObject.filter.length > 0){
+        if(queryObject.filter.length){
             pieces[1] = 1;
 
             if(pieces[0])
@@ -127,11 +127,43 @@ export default class QueryService {
             });
         }
 
-        //$orderby
-        if(queryObject.orderby.length > 0){
+        //$filter GEO AWESOMENESS
+        if(queryObject.shapes.length){
+            let prev_q = false;
+
             pieces[2] = 1;
 
-            if(pieces[0] || pieces[1])
+            if(!pieces[0]){
+                s += '$filter=';
+            }
+
+            if(pieces[1]){
+                s += ' or ';
+            }
+
+            for(let i = 0, len = queryObject.shapes.length; i < len; i++){
+                let shape = queryObject.shapes[i];
+                let _s = '';
+
+                if(shape.type === 'circle') {
+                    _s = this.handleCircle(shape);
+                } else if(shape.type === 'rectangle') {
+                    _s = this.handleRectangle(shape);
+                } else if(shape.type === 'polygon') {
+                    _s = this.handlePolygon(shape);
+                }
+
+                if(_s){
+                    s += _s;
+                }
+            }
+        }
+
+        //$orderby
+        if(queryObject.orderby.length){
+            pieces[3] = 1;
+
+            if(pieces[0] || pieces[1] || pieces[2])
                 s += '&';
 
             s += '$orderby=';
@@ -148,9 +180,9 @@ export default class QueryService {
 
         //$top
         if(queryObject.top){
-            pieces[3] = 1;
+            pieces[4] = 1;
 
-            if(pieces[0] || pieces[1] || pieces[2])
+            if(pieces[0] || pieces[1] || pieces[2] || pieces[3])
                 s += '&';
 
             s += '$top=';
@@ -160,15 +192,46 @@ export default class QueryService {
 
         //$skip
         if(queryObject.skip){
-            pieces[4] = 1;
+            pieces[5] = 1;
 
-            if(pieces[0] || pieces[1] || pieces[2] || pieces[3])
+            if(pieces[0] || pieces[1] || pieces[2] || pieces[3] || pieces[4])
                 s += '&';
 
             s += '$skip=';
 
             s += queryObject.skip;
         }
+
+        return s;
+    }
+
+    /**
+     * Turn a circle into an ODATA query string
+     */
+    handleCircle(circle) {
+        let s = 'geo.distance(Location, POINT(';
+        let lat = circle.center.lat(), lng = circle.center.lng();
+        let radius = circle.getRadius();
+
+        s += `${lng} ${lng})) le ${radius}`;
+
+        return s;
+    }
+
+    /**
+     * Turn a rectangle into an ODATA query string
+     */
+    handleRectangle(shape) {
+        let s = '';
+
+        return s;
+    }
+
+    /**
+     * Turn a polygon into an ODATA query string
+     */
+    handlePolygon(shape) {
+        let s = '';
 
         return s;
     }
