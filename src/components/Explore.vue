@@ -125,7 +125,7 @@
                                 <div class="row mb0">
                                     <div class="col s12">
                                         <span class="card-title">Map</span>
-                                        <button class="waves-effect waves-light btn right" @click="toggleMapSize">
+                                        <button class="waves-effect waves-light btn right" @click="map.expanded = !map.expanded">
                                             <span v-show="map.expanded">Shrink</span>
                                             <span v-show="!map.expanded">Expand</span>
                                         </button>
@@ -138,7 +138,7 @@
                                 </div>
                                 <div class="divider mt-sm"></div>
                                 <div class="section">
-                                    <div id="map"></div>
+                                    <explore-map v-on:mapResized="scrollToMap" :listings="query.results.value" :expanded="map.expanded"></explore-map>
                                 </div>
                             </div>
                         </div>
@@ -208,7 +208,7 @@
     import Results from './Results.vue';
     import FilterInput from './explorer/FilterInput.vue';
     import OrderbyInput from './explorer/OrderbyInput.vue';
-    import Map from './explorer/Map.vue';
+    import ExploreMap from './explorer/ExploreMap.vue';
     import Server from '../models/Server';
     import _ from 'lodash';
     import $ from 'jquery';
@@ -217,7 +217,7 @@
     import config from '../config/env';
 
     export default {
-        components: {Results, FilterInput, OrderbyInput, Map},
+        components: {Results, FilterInput, OrderbyInput, ExploreMap},
         data() {
             return {
                 server: null,
@@ -247,7 +247,9 @@
                     auth_error: false,
                     string: '',
                     searching: false,
-                    results: null,
+                    results: {
+                        value: null
+                    },
                     round_trip: null
                 },
                 show_edit_button: true
@@ -422,7 +424,7 @@
                 let url = this.url;
                 let start = performance.now();
                 this.query.searching = true;
-                this.query.results = null;
+                this.query.results = {value:null};
                 this.query.round_trip = null;
                 this.query.auth_error = false;
 
@@ -526,22 +528,13 @@
             /**
              * Toggle the size of the map
              */
-            toggleMapSize() {
-                this.map.center = this.map.instance.getCenter();
-                this.map.expanded = !this.map.expanded;
+            scrollToMap() {
+                let offset = $('#map-col').offset().top;
 
-                setTimeout(() => {
-                    let offset = $('#map-col').offset().top;
+                offset += -100;
 
-                    offset += -100;
-
-                    google.maps.event.trigger(this.map.instance, 'resize');
-
-                    this.map.instance.setCenter(this.map.center);
-
-                    $('html, body').animate({
-                        scrollTop: offset
-                    }, 400);
+                $('html, body').animate({
+                    scrollTop: offset
                 }, 400);
             },
             getToken(client_secret) {

@@ -1,0 +1,15 @@
+#map {
+  height: 350px;
+}
+
+.big-map {
+  #map {
+    height: 500px
+  }
+}
+
+.map-help {
+  small {
+    font-size: 0.9em;
+  }
+}

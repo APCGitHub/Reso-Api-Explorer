@@ -15,6 +15,8 @@ export default class GoogleMapsService {
 
         this.map = null;
 
+        GoogleMaps.LIBRARIES = ['geometry', 'drawing'];
+
         GoogleMaps.KEY = 'AIzaSyAAVbYD7I7G9WBR1vibPL1jNPq5l9kE5cM';
     }
 
