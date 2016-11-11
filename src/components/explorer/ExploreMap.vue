@@ -33,7 +33,7 @@
                     circles: [],
                     rectangles: [],
                     polygons: []
-                }
+                }//
             }
         },
         mounted() {
@@ -45,8 +45,7 @@
                 zoom: 10
             });
 
-            //Load the map
-            this.googleMapService.load((map) => {
+            this.googleMapService.load((map, google) => {
                 this.map.instance = map;
                 this.map.center = this.map.instance.getCenter();
                 this.markerService = new MarkerService(this.map.instance);
@@ -87,10 +86,6 @@
 
                     this.bindEvents();
                 }, 500);
-
-                setTimeout(() => {
-                    google.maps.event.trigger(this.map.instance, 'resize');
-                }, 1000);
             });
         },
         methods: {
@@ -110,6 +105,7 @@
                  * Circle was just created
                  */
                 google.maps.event.addListener(this.map.drawing_manager, 'circlecomplete', (circle) => {
+                    console.log('circle complete');
                     circle.type = 'circle';
                     circle.id = ShortId.generate();
 
@@ -120,15 +116,17 @@
                         this.map.info_window.setPosition(circle.getCenter());
                     });
 
-                    google.maps.event.addListener(circle, 'radius_changed', () => {
-                        let r = circle.getRadius();
-                    });
-
-                    google.maps.event.addListener(circle, 'center_changed', () => {
-                        let point = circle.getCenter();
-                    });
+//                    google.maps.event.addListener(circle, 'radius_changed', () => {
+//                        let r = circle.getRadius();
+//                    });
+//
+//                    google.maps.event.addListener(circle, 'center_changed', () => {
+//                        let point = circle.getCenter();
+//                    });
 
                     this.shapes.circles.push(circle);
+
+                    this.emitShapesToParent();
                 });
 
                 /**
@@ -146,6 +144,8 @@
                     });
 
                     this.shapes.rectangles.push(rectangle);
+
+                    this.emitShapesToParent();
                 });
 
                 /**
@@ -163,6 +163,8 @@
                     });
 
                     this.shapes.polygons.push(polygon);
+
+                    this.emitShapesToParent();
                 });
             },
             /**
@@ -197,19 +199,32 @@
                                 array = 'polygons';
                                 break;
                         }
-
+                        //Handle removing locally
                         if(array && this.shapes[array]){
-                            for(let i = 0; i < this.shapes[array]; i++){
-                                if(this.shapes[array].id === this.map.selected_shape.id){
+                            for(let i = 0; i < this.shapes[array].length; i++){
+                                console.log(this.shapes[array]);
+                                if(this.shapes[array][i].id === this.map.selected_shape.id){
                                     this.shapes[array].splice(i, 1);
                                 }
                             }
                         }
 
+                        //Remove from map
                         this.map.selected_shape.setMap(null);
+
+                        //Close the info window
                         this.map.info_window.close();
+
+                        //Tell the parent about the update
+                        this.emitShapesToParent();
                     });
                 });
+            },
+            /**
+             * Tell the parent that the shapes have changed
+             */
+            emitShapesToParent(){
+                this.$emit('shapesChanged', this.shapes);
             }
         },
         watch: {
