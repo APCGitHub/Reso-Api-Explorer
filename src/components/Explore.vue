@@ -138,7 +138,7 @@
                                 </div>
                                 <div class="divider mt-sm"></div>
                                 <div class="section">
-                                    <explore-map v-on:mapResized="scrollToMap" :listings="query.results.value" :expanded="map.expanded"></explore-map>
+                                    <explore-map v-on:mapResized="scrollToMap" v-on:shapesChanged="updateShapes" :listings="query.results.value" :expanded="map.expanded"></explore-map>
                                 </div>
                             </div>
                         </div>
@@ -201,7 +201,6 @@
 
 <script type="text/babel">
     import queryService from '../services/QueryService';
-    import googleMapService from '../services/GoogleMaps';
     import markerService from '../services/MarkerService';
     import accessTokenSerivce from '../services/AccessTokenService';
     import serverService from '../services/ServerService';
@@ -237,6 +236,7 @@
                     instance: null
                 },
                 query_builder: {
+                    shapes: [],
                     select: '',
                     filter: [],
                     orderby: [],
@@ -268,6 +268,7 @@
                 //Bind the server
                 this.server = server;
 
+                //See if they can edit this server or not
                 for(let i = 0; i < config.servers.length; i++){
                     if(config.servers[i].id === this.server.id){
                         this.show_edit_button = false;
@@ -370,23 +371,9 @@
             });
         },
         mounted() {
+            console.log('Explore.vue: mounted');
             //Example queries
             this.example_queries = this.services.query_service.exampleQueries;
-
-            //Load map service when DOM is ready
-            this.services.map_service = new googleMapService(document.getElementById('map'), {
-                center: {
-                    lat: 39.9612,
-                    lng: -82.9988
-                },
-                zoom: 10
-            });
-
-            //Load the google map
-            this.services.map_service.load((map) => {
-                this.map.instance = map;
-                this.services.marker_service = new markerService(this.map.instance);
-            });
 
             //Handle query click scroll
             $(document).ready(() => {
@@ -537,6 +524,12 @@
                     scrollTop: offset
                 }, 400);
             },
+            /**
+             * Fetch a new token from the data source.
+             *
+             * @param client_secret
+             * @returns {*}
+             */
             getToken(client_secret) {
                 return new Promise((resolve, reject) => {
                     this.services.accesstoken_service.getToken(client_secret, this.code).then((res) => {
@@ -557,6 +550,15 @@
                         reject(err);
                     });
                 });
+            },
+            updateShapes(shapes) {
+                this.query_builder.shapes = [];//
+
+                for(let key in shapes){
+                    for(let i = 0; i < shapes[key].length; i++){
+                        this.query_builder.shapes.push(shapes[key][i]);
+                    }
+                }
             }
         },
         computed: {
@@ -577,11 +579,6 @@
 
                     return base;
                 }
-            }
-        },
-        events: {
-            'orderby.delete'(id) {
-                console.log(id);
             }
         }
     }
