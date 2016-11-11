@@ -194,7 +194,7 @@ export default class QueryService {
                         p.push(this.handlePolygon(polygons[i]));
                     }
 
-                    s += p.join(',') + ')';
+                    s += p.join(',') + '))';
                 }
             }
         }
