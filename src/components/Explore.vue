@@ -371,7 +371,6 @@
             });
         },
         mounted() {
-            console.log('Explore.vue: mounted');
             //Example queries
             this.example_queries = this.services.query_service.exampleQueries;
 
