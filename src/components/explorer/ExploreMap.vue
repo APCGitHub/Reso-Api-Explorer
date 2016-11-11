@@ -5,6 +5,7 @@
 <script type="text/babel">
     import GoogleMapService from '../../services/GoogleMaps';
     import MarkerService from '../../services/MarkerService';
+    import ShortId from 'shortid';
 
     export default {
         googleMapService: null,
@@ -13,7 +14,7 @@
         data() {
             return {
                 map: {
-                    selected_shap: null,
+                    selected_shape: null,
                     expanded: this.expanded,
                     center: {},
                     instance: null,
@@ -27,6 +28,11 @@
                         geodesic: true
                     },
                     info_window: null,
+                },
+                shapes: {
+                    circles: [],
+                    rectangles: [],
+                    polygons: []
                 }
             }
         },
@@ -64,7 +70,7 @@
                  * @type {google.maps.drawing.DrawingManager}
                  */
                 this.map.drawing_manager = new google.maps.drawing.DrawingManager({
-                    drawingMode: google.maps.drawing.OverlayType.MARKER,
+                    drawingMode: null,
                     drawingControl: true,
                     drawingControlOptions: {
                         position: google.maps.ControlPosition.TOP_CENTER,
@@ -75,23 +81,39 @@
                     rectangleOptions: this.map.shape_props
                 });
 
-                //Load the drawing manager and bind shape events
+                //Bind shape events
                 setTimeout(() => {
                     this.map.drawing_manager.setMap(this.map.instance);
 
                     this.bindEvents();
                 }, 500);
+
+                setTimeout(() => {
+                    google.maps.event.trigger(this.map.instance, 'resize');
+                }, 1000);
             });
         },
         methods: {
+            /**
+             * Handle setting up all the map related events and what not
+             */
             bindEvents() {
                 //Set up the info window
                 this.shapesWindow();
+
+                //When a shape is done switch back to hand mode
+                google.maps.event.addListener(this.map.drawing_manager, 'overlaycomplete', (e) => {
+                    this.map.drawing_manager.setDrawingMode(null);
+                });
 
                 /**
                  * Circle was just created
                  */
                 google.maps.event.addListener(this.map.drawing_manager, 'circlecomplete', (circle) => {
+                    circle.type = 'circle';
+                    circle.id = ShortId.generate();
+
+                    //Handle click
                     google.maps.event.addListener(circle, 'click', (e) => {
                         this.map.selected_shape = circle;
                         this.map.info_window.open(this.map.instance);
@@ -105,30 +127,49 @@
                     google.maps.event.addListener(circle, 'center_changed', () => {
                         let point = circle.getCenter();
                     });
+
+                    this.shapes.circles.push(circle);
                 });
 
                 /**
                  * Rectangle was just created
                  */
                 google.maps.event.addListener(this.map.drawing_manager, 'rectanglecomplete', (rectangle) => {
+                    rectangle.type = 'rectangle';
+                    rectangle.id = ShortId.generate();
+
+                    //Handle click
                     google.maps.event.addListener(rectangle, 'click', (e) => {
                         this.map.selected_shape = rectangle;
                         this.map.info_window.open(this.map.instance);
                         this.map.info_window.setPosition(rectangle.getBounds().getCenter());
                     });
+
+                    this.shapes.rectangles.push(rectangle);
                 });
 
                 /**
                  * Polygon was just created
                  */
                 google.maps.event.addListener(this.map.drawing_manager, 'polygoncomplete', (polygon) => {
+                    polygon.type = 'polygon';
+                    polygon.id = ShortId.generate();
+
+                    //Handle click
                     google.maps.event.addListener(polygon, 'click', (e) => {
                         this.map.selected_shape = polygon;
                         this.map.info_window.open(this.map.instance);
                         this.map.info_window.setPosition(polygon.my_getBounds().getCenter());
                     });
+
+                    this.shapes.polygons.push(polygon);
                 });
             },
+            /**
+             * Set up the shapes info window
+             *
+             * TODO: Add more data to the window
+             */
             shapesWindow() {
                 this.map.info_window = new google.maps.InfoWindow();
 
@@ -136,8 +177,35 @@
 
                 this.map.info_window.setContent(content);
 
+                //When info window dom loaded
                 google.maps.event.addListener(this.map.info_window, 'domready', () => {
+
+                    //Attach event to the button to remove the selected shape
                     google.maps.event.addDomListener(document.getElementById('shape-button'), 'click', () => {
+                        let array = null;
+
+                        switch(this.map.selected_shape.type){
+                            case 'circle':
+                                array = 'circles';
+                                break;
+
+                            case 'rectangle':
+                                array = 'rectangles';
+                                break;
+
+                            case 'polygon':
+                                array = 'polygons';
+                                break;
+                        }
+
+                        if(array && this.shapes[array]){
+                            for(let i = 0; i < this.shapes[array]; i++){
+                                if(this.shapes[array].id === this.map.selected_shape.id){
+                                    this.shapes[array].splice(i, 1);
+                                }
+                            }
+                        }
+
                         this.map.selected_shape.setMap(null);
                         this.map.info_window.close();
                     });
