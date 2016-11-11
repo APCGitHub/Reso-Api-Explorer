@@ -141,7 +141,7 @@ export default class QueryService {
                 else
                     s += '$filter=';
             } else {
-                s += ' or ';
+                s += ' and ';
             }
 
             //Only get polygons
@@ -185,7 +185,7 @@ export default class QueryService {
                 }
 
                 if(polygons.length == 1){
-                    s += `geo.intersects(Location, POLYGON${this.handlePolygon(polygons[0])}`;
+                    s += `geo.intersects(Location, POLYGON${this.handlePolygon(polygons[0])})`;
                 } else {
                     s += 'geo.intersects(Location, MULTIPOLYGON(';
 
@@ -275,7 +275,7 @@ export default class QueryService {
 
         let polygon = QueryService.createPolygon(points);
 
-        s += polygon + ')';
+        s += polygon + '))';
 
         return s;
     }

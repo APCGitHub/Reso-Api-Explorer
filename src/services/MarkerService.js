@@ -1,15 +1,22 @@
 /**
  * Created by aclinton on 11/7/16.
  */
-import GoogleMaps from 'google-maps'
+import _ from 'lodash';
 
 export default class MarkerService {
     constructor(map){
         this.map = map;
+        this.markers = [];
     }
 
     plotMarkers(listings){
-        let markers = [];
+        if(!listings || !listings.length)
+            return;
+
+        //Clear old markers
+        this.clearMarkers();
+
+        //New bounds
         let bounds = new google.maps.LatLngBounds();
 
         for(let i = 0, len = listings.length; i < len; i++){
@@ -31,12 +38,20 @@ export default class MarkerService {
                     animation: google.maps.Animation.DROP
                 });
 
-                markers.push(m);
+                this.markers.push(m);
 
                 bounds.extend(pos)
             }
         }
 
         this.map.fitBounds(bounds);
+    }
+
+    clearMarkers() {
+        _.forEach(this.markers, (m) => {
+            m.setMap(null);
+        });
+
+        this.markers = [];
     }
 }
