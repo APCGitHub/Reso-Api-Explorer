@@ -33,7 +33,7 @@
                     circles: [],
                     rectangles: [],
                     polygons: []
-                }//
+                }
             }
         },
         mounted() {
@@ -105,7 +105,6 @@
                  * Circle was just created
                  */
                 google.maps.event.addListener(this.map.drawing_manager, 'circlecomplete', (circle) => {
-                    console.log('circle complete');
                     circle.type = 'circle';
                     circle.id = ShortId.generate();
 
@@ -115,14 +114,6 @@
                         this.map.info_window.open(this.map.instance);
                         this.map.info_window.setPosition(circle.getCenter());
                     });
-
-//                    google.maps.event.addListener(circle, 'radius_changed', () => {
-//                        let r = circle.getRadius();
-//                    });
-//
-//                    google.maps.event.addListener(circle, 'center_changed', () => {
-//                        let point = circle.getCenter();
-//                    });
 
                     this.shapes.circles.push(circle);
 
@@ -202,7 +193,6 @@
                         //Handle removing locally
                         if(array && this.shapes[array]){
                             for(let i = 0; i < this.shapes[array].length; i++){
-                                console.log(this.shapes[array]);
                                 if(this.shapes[array][i].id === this.map.selected_shape.id){
                                     this.shapes[array].splice(i, 1);
                                 }
