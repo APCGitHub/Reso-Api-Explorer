@@ -531,7 +531,7 @@
             scrollToMap() {
                 let offset = $('#map-col').offset().top;
 
-                offset += -100;
+                offset += -10;
 
                 $('html, body').animate({
                     scrollTop: offset
