@@ -92,6 +92,11 @@ export default class QueryService {
         }];
     }
 
+    /**
+     * This method takes the query object and builds the ODATA url.
+     * @param queryObject
+     * @returns {string}
+     */
     buildUrl(queryObject) {
         let s = '';
         let pieces = [0, 0, 0, 0, 0]; //select, filter, orderby, top, skip
