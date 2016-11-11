@@ -1,6 +1,8 @@
 /**
  * Created by aclinton on 10/21/16.
  */
+import _ from 'lodash';
+
 export default class QueryService {
     constructor() {
         this.exampleQueries = [{
@@ -129,32 +131,70 @@ export default class QueryService {
 
         //$filter GEO AWESOMENESS
         if(queryObject.shapes.length){
-            let prev_q = false;
+            let other_shapes = false;
 
             pieces[2] = 1;
 
-            if(!pieces[0]){
-                s += '$filter=';
-            }
-
-            if(pieces[1]){
+            if(!pieces[1]){
+                if(pieces[0])
+                    s += '&$filter=';
+                else
+                    s += '$filter=';
+            } else {
                 s += ' or ';
             }
 
-            for(let i = 0, len = queryObject.shapes.length; i < len; i++){
-                let shape = queryObject.shapes[i];
+            //Only get polygons
+            let polygons = _.filter(queryObject.shapes, (shape) => {
+                return shape.type === 'polygon';
+            });
+
+            //Anything but polygons
+            let not_polygons = _.filter(queryObject.shapes, (shape) =>{
+                return shape.type !== 'polygon';
+            });
+
+            for(let i = 0, len = not_polygons.length; i < len; i++){
+                let shape = not_polygons[i];
                 let _s = '';
 
                 if(shape.type === 'circle') {
+                    other_shapes = true;
                     _s = this.handleCircle(shape);
                 } else if(shape.type === 'rectangle') {
+                    other_shapes = true;
                     _s = this.handleRectangle(shape);
-                } else if(shape.type === 'polygon') {
-                    _s = this.handlePolygon(shape);
+                }
+
+                //Multiple need an or
+                if(i){
+                    s += ' or ';
                 }
 
                 if(_s){
                     s += _s;
+                }
+            }
+
+            /**
+             * Multiple polygons have a special function MULTIPOLYGON
+             */
+            if(polygons.length){
+                if(not_polygons.length){
+                    s += ' or ';
+                }
+
+                if(polygons.length == 1){
+                    s += `geo.intersects(Location, POLYGON${this.handlePolygon(polygons[0])}`;
+                } else {
+                    s += 'geo.intersects(Location, MULTIPOLYGON(';
+
+                    let p = [];
+                    for(let i = 0; i < polygons.length; i++){
+                        p.push(this.handlePolygon(polygons[i]));
+                    }
+
+                    s += p.join(',') + ')';
                 }
             }
         }
@@ -211,9 +251,9 @@ export default class QueryService {
     handleCircle(circle) {
         let s = 'geo.distance(Location, POINT(';
         let lat = circle.center.lat(), lng = circle.center.lng();
-        let radius = circle.getRadius();
+        let radius = circle.getRadius() / 111195;
 
-        s += `${lng} ${lng})) le ${radius}`;
+        s += `${lng} ${lat})) le ${radius}`;
 
         return s;
     }
@@ -221,8 +261,21 @@ export default class QueryService {
     /**
      * Turn a rectangle into an ODATA query string
      */
-    handleRectangle(shape) {
-        let s = '';
+    handleRectangle(rectangle) {
+        let s = 'geo.intersects(Location, POLYGON(';
+        let points = [];
+        let bounds = rectangle.getBounds();
+        let NE = bounds.getNorthEast();
+        let SW = bounds.getSouthWest();
+
+        points.push({ lat: NE.lat(), lng: SW.lng() });
+        points.push({ lat: NE.lat(), lng: NE.lng() });
+        points.push({ lat: SW.lat(), lng: NE.lng() });
+        points.push({ lat: SW.lat(), lng: SW.lng() });
+
+        let polygon = QueryService.createPolygon(points);
+
+        s += polygon + ')';
 
         return s;
     }
@@ -230,8 +283,36 @@ export default class QueryService {
     /**
      * Turn a polygon into an ODATA query string
      */
-    handlePolygon(shape) {
-        let s = '';
+    handlePolygon(polygon) {
+        let s = '(';
+
+        var points = [];
+        for (var i = 0; i < polygon.getPath().getLength(); i++) {
+            var coord = polygon.getPath().getAt(i);
+            points.push({ lat: coord.lat(), lng: coord.lng() });
+        }
+
+        s += QueryService.createPolygon(points) + ')';
+
+        return s;
+    }
+
+    /**
+     * Turn polygon points into a point string for ODATA queries.
+     *
+     * @param points
+     * @returns {string}
+     */
+    static createPolygon(points) {
+        let s = '(';
+
+        let new_points = points.map((point) => {
+            return `${point.lng} ${point.lat}`;
+        });
+
+        new_points.join(', ');
+
+        s += new_points + ')';
 
         return s;
     }
