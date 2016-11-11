@@ -175,14 +175,14 @@
                     <div class="col s12 m10 offset-m1">
                         <div class="card">
                             <div class="card-content">
-                                <div class="row" v-if="query.results">
+                                <div class="row" v-if="query.results.value">
                                     <div class="col s12 m4 card-title">Total: {{query.results['@retsrabbit.total_results']}}</div>
                                     <div class="col s12 m4 card-title center-align">Results: {{query.results['@odata.count']}}</div>
                                     <div class="col s12 m4 card-title">
                                         <span class="right">{{query.round_trip}}ms</span>
                                     </div>
                                 </div>
-                                <div class="card-title center-align" v-show="!query.results">
+                                <div class="card-title center-align" v-show="!query.results.value">
                                     <span>Results</span>
                                 </div>
                                 <div class="row">
@@ -204,7 +204,7 @@
     import markerService from '../services/MarkerService';
     import accessTokenSerivce from '../services/AccessTokenService';
     import serverService from '../services/ServerService';
-    import Results from './Results.vue';
+    import Results from './explorer/Results.vue';
     import FilterInput from './explorer/FilterInput.vue';
     import OrderbyInput from './explorer/OrderbyInput.vue';
     import ExploreMap from './explorer/ExploreMap.vue';
@@ -410,7 +410,7 @@
                 let url = this.url;
                 let start = performance.now();
                 this.query.searching = true;
-                this.query.results = {value:null};
+                this.query.results.value = null;
                 this.query.round_trip = null;
                 this.query.auth_error = false;
 
