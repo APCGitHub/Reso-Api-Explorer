@@ -9,6 +9,7 @@ export default {
             name: 'First Demo',
             token_endpoint: 'http://api.app/api/oauth/access_token',
             auth_endpoint: 'http://api.app/api/oauth/authorize',
+            data_endpoint: 'http://api.app/api/v1',
             client_id: 'secret',
             client_secret: 'secret'
         }
