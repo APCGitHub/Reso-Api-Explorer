@@ -120,8 +120,6 @@
                             FlashService.flash('error', err);
                         });
                     } else {
-                        FlashService.flash('info', 'Updating default servers');
-
                         //Create the default servers
                         this.serverService.updateDefaultServers().then(res => {
                             Server.all().then(servers => {
