@@ -6,6 +6,7 @@ export default {
     },
     servers: [
         {
+            id: 'first_demo',
             name: 'First Demo',
             token_endpoint: 'http://api.app/api/oauth/access_token',
             auth_endpoint: 'http://api.app/api/oauth/authorize',
