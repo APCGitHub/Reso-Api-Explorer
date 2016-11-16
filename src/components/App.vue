@@ -14,7 +14,7 @@
         <div class="container">
             <div class="row">
                 <div class="col s12">
-                    <transition>
+                    <transition name="fade" appear mode="out-in">
                         <router-view class="view"></router-view>
                     </transition>
                 </div>
@@ -30,14 +30,27 @@
     export default {
         data() {
             return {
-                siteName: config.ENV.APP_NAME
+                siteName: config.ENV.APP_NAME,
+                transition: {
+                    enter: '',
+                    leave: ''
+                }
             }
         },
-        methods: {
-        }
+        methods: {}
     }
 </script>
 
-<style style="lang">
+<style>
+    .fade-enter-active {
+        animation: fadeIn 0.15s;
+    }
 
+    .fade-leave {
+        opacity: 0;
+    }
+
+    .fade-leave-active {
+        animation: fadeOut 0.15s;
+    }
 </style>
