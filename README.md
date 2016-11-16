@@ -1,7 +1,7 @@
 # Reso-Api-Explorer
 This tool serves as a simple and intuitive interface for developers allowing them to interact with the new RESO Web API
 
-## Installation
+#Installation
 
  1. Install node dependencies
     ```shell
@@ -12,7 +12,7 @@ This tool serves as a simple and intuitive interface for developers allowing the
     $ bower install
     ```
  
- ## Environment Setup
+ # Environment Setup
  
  This app expects there to be an `env.js` file in the root of the project.
  For your convenience there is an example env file called `env.example.js.`
@@ -31,7 +31,7 @@ This tool serves as a simple and intuitive interface for developers allowing the
     * client_id: The registered Client ID which has access to this server
     * client_secret: The registered Client Secret which has access to this server
  
- ## Build the App
+ # Build the App
  
  1. Run webpack: builds the src Vue files into browser compatible JS
      ```shell
