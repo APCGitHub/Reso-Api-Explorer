@@ -12,6 +12,13 @@ module.exports = {
         path: __dirname + "/build",
     },
     module: {
+        preLoaders: [
+            {
+                test: /\.js$/, // include .js files
+                exclude: /node_modules/, // exclude any and all files in the node_modules folder
+                loader: "jshint-loader"
+            }
+        ],
         loaders: [
             {test: /\.vue$/, loader: 'vue'},
             {test: /\.js$/, loader: 'babel', exclude: /node_modules/},
@@ -35,5 +42,9 @@ module.exports = {
         alias: {
             vue: 'vue/dist/vue.js'
         }
+    },
+    jshint: {
+        esversion: 6,
+        asi: true
     }
 }
