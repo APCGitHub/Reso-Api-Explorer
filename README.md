@@ -1,18 +1,18 @@
 # Reso-Api-Explorer
 This tool serves as a simple and intuitive interface for developers allowing them to interact with the new RESO Web API
 
-#Installation
+##Installation
 
 1. Install node dependencies
-```shell
-$ npm install
-```
+    ```shell
+    $ npm install
+    ```
 2. Install bower
-```shell
-$ bower install
-```
+    ```shell
+    $ bower install
+    ```
  
- # Environment Setup
+##Environment Setup
  
  This app expects there to be an `env.js` file in the root of the project.
  For your convenience there is an example env file called `env.example.js.`
