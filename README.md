@@ -24,6 +24,7 @@ This tool serves as a simple and intuitive interface for developers allowing the
     * APP_URL: This is the domain that is hosting the app, and will be used when generating the redirect_uri for servers.
     * API_URL: Not actually sure if this one is necessary.
  2. servers: This will be an array of default servers
+    * id: The static id of the server (used internally)
     * name: Name of the server
     * token_endpoint: URL to fetch a new access_token
     * auth_endpoint: OpenID Connect url to grab an authorization code
