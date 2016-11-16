@@ -39,11 +39,13 @@ This tool serves as a simple and intuitive interface for developers allowing the
     $ gulp
     ```
 2. Local Build
+
     ```shell
     //In local development, webpack will start up a local dev server
     $ npm run dev
     ```
 3. Production Build
+
     ```shell
     //For production builds, webpack will build a standalone bundle
     $ npm run prod
