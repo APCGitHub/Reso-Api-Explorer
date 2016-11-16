@@ -7,7 +7,7 @@ This tool serves as a simple and intuitive interface for developers allowing the
     ```shell
     $ npm install
     ```
-2. Install bower
+2. Install bower libraries
 
     ```shell
     $ bower install
@@ -41,5 +41,5 @@ This tool serves as a simple and intuitive interface for developers allowing the
  
     ```shell
     $ npm run prod //On Production
-    $ npm run dev  //On Development
+    $ npm run dev  //On Development, also starts a dev server
     ```
