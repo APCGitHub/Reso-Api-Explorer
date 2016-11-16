@@ -3,7 +3,7 @@ This tool serves as a simple and intuitive interface for developers allowing the
 
 #Installation
 
- 1. Install node dependencies
+1. Install node dependencies
 ```shell
 $ npm install
 ```
