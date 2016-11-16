@@ -32,13 +32,14 @@ This tool serves as a simple and intuitive interface for developers allowing the
     * client_secret: The registered Client Secret which has access to this server
  
 ##Build the App
- 1. Run webpack: builds the src Vue files into browser compatible JS
+1. Run gulp: builds all of the static assets
  
-     ```shell
-     $ npm run prod
-     ```
- 2. Run gulp: builds all of the static assets
+    ```
+    $ gulp
+    ```
+2. Run webpack: builds the src Vue files into browser compatible JS
  
-     ```
-     $ gulp
-     ```
+    ```shell
+    $ npm run prod //On Production
+    $ npm run dev  //On Development
+    ```
