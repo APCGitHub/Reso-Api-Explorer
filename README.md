@@ -2,7 +2,6 @@
 This tool serves as a simple and intuitive interface for developers allowing them to interact with the new RESO Web API
 
 ##Installation
-
 1. Install node dependencies
 
     ```shell
@@ -15,7 +14,6 @@ This tool serves as a simple and intuitive interface for developers allowing the
     ```
  
 ##Environment Setup
- 
  This app expects there to be an `env.js` file in the root of the project.
  For your convenience there is an example env file called `env.example.js.`
  Feel free to modify and use this for your own `env.js`.
@@ -33,13 +31,14 @@ This tool serves as a simple and intuitive interface for developers allowing the
     * client_id: The registered Client ID which has access to this server
     * client_secret: The registered Client Secret which has access to this server
  
- # Build the App
- 
+ ##Build the App
  1. Run webpack: builds the src Vue files into browser compatible JS
+ 
      ```shell
      $ npm run prod
      ```
  2. Run gulp: builds all of the static assets
+ 
      ```
      $ gulp
      ```
