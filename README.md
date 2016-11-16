@@ -38,9 +38,15 @@ This tool serves as a simple and intuitive interface for developers allowing the
     ```
     $ gulp
     ```
-2. Run webpack: builds the src Vue files into browser compatible JS
- 
+2. Local Build
+    * In local development, webpack will start up a local dev server
+    
     ```shell
-    $ npm run prod //On Production
-    $ npm run dev  //On Development, also starts a dev server
+    $ npm run dev
+    ```
+3. Production Build
+    * For production builds, webpack will build a standalone bundle
+    
+    ```shell
+    $ npm run prod
     ```
