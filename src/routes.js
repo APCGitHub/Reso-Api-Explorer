@@ -9,11 +9,31 @@ import NewServer from './components/server/Create.vue';
 import ServerEdit from './components/server/Edit.vue';
 
 const routes = [
-    {path: '/', name: 'home', component: Home},
-    {path: '/servers', name: 'servers.index', component: Servers},
-    {path: '/servers/:id', name: 'servers.edit', component: ServerEdit},
-    {path: '/servers/create', name: 'servers.create', component: NewServer},
-    {path: '/explore/:id', name: 'explore', component: Explore}
+    {
+        path: '/',
+        name: 'home',
+        component: Home
+    },
+    {
+        path: '/servers',
+        name: 'servers.index',
+        component: Servers
+    },
+    {
+        path: '/servers/:id',
+        name: 'servers.edit',
+        component: ServerEdit
+    },
+    {
+        path: '/servers/create',
+        name: 'servers.create',
+        component: NewServer
+    },
+    {
+        path: '/explore/:id',
+        name: 'explore',
+        component: Explore
+    }
 ];
 
 let router = new VueRouter({
