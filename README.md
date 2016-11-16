@@ -33,18 +33,18 @@ This tool serves as a simple and intuitive interface for developers allowing the
     * client_secret: The registered Client Secret which has access to this server
  
 ##Build the App
-1. Run gulp: builds all of the static assets
+* Run gulp: builds all of the static assets
  
     ```
     $ gulp
     ```
-2. Local Build
+* Local Build
 
     ```shell
     //In local development, webpack will start up a local dev server
     $ npm run dev
     ```
-3. Production Build
+* Production Build
 
     ```shell
     //For production builds, webpack will build a standalone bundle
