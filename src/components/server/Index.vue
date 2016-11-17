@@ -13,7 +13,7 @@
                 <div class="row">
                     <div class="col s12">
                         <div class="row server-list" v-show="servers.length">
-                            <div class="col s6" v-for="server of servers">
+                            <div class="col s12 m6" v-for="server of servers">
                                 <div class="card server">
                                     <div class="card-content">
                                         <span class="card-title">{{server.name}}</span>
