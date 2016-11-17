@@ -1,0 +1,39 @@
+.navbar-fixed {
+  height: 132px;
+}
+
+nav {
+  transition: height 0.3s ease;
+
+  &.navbar {
+    z-index:10;
+  }
+
+  &.breadcrumbs {
+    top: 63px;
+    z-index: 9;
+
+    .breadcrumb {
+      &:first-child {
+        margin-left: 10px;
+      }
+
+      &:before {
+        font-family: FontAwesome;
+        content: "\f054";
+      }
+    }
+  }
+}
+
+@media only screen and (max-width:600px){
+  .navbar-fixed {
+    height: 128px;
+  }
+
+  nav {
+    &.breadcrumbs {
+      top: 56px;
+    }
+  }
+}
