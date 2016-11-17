@@ -1,13 +1,20 @@
 <template>
     <div id="wrapper">
         <div class="navbar-fixed">
-            <nav class="teal">
+            <nav class="teal darken-1 navbar">
                 <div class="nav-wrapper">
                     <router-link to="/" class="brand-logo">{{siteName}}</router-link>
                     <ul class="right hide-on-med-and-down">
                         <router-link :to="{name: 'home'}" tag="li"><a>Home</a></router-link>
                         <router-link :to="{name: 'servers.index'}" tag="li"><a>Servers</a></router-link>
                     </ul>
+                </div>
+            </nav>
+            <nav class="teal breadcrumbs">
+                <div class="nav-wrapper">
+                    <div class="col s12">
+                        <breadcrumbs></breadcrumbs>
+                    </div>
                 </div>
             </nav>
         </div>
@@ -26,8 +33,12 @@
 <script type="text/babel">
     import serverService from '../services/ServerService';
     import config from '../config/env';
+    import Breadcrumbs from './Breadcrumbs.vue';
 
     export default {
+        components: {
+            Breadcrumbs
+        },
         data() {
             return {
                 siteName: config.ENV.APP_NAME,
