@@ -1,6 +1,46 @@
+import {Routes} from '../routes';
 
 export default class Breadcrumbs {
     constructor() {}
+
+    build(to) {
+        let path = this.getReversePath(Breadcrumbs.crumbs[0], to);
+        let crumbs = [];
+
+        if(path === null)
+            return crumbs;
+
+        for(let i = 0; i < path.length; i++){
+            for(let j = 0; j < Routes.length; j++){
+                if(path[i].id === Routes[j].name){
+                    crumbs.push({
+                        url: Routes[j].path,
+                        name: path[i].name
+                    });
+                }
+            }
+        }
+
+        return crumbs;
+    }
+
+    getReversePath(node, target){
+        if(node.id === target.name){
+            return [node];
+        }
+
+        if(node.children) {
+            for(let i = 0; i < node.children.length; i++){
+                let n = this.getReversePath(node.children[i], target);
+
+                if(n){
+                    return [node].concat(n);
+                }
+            }
+        }
+
+        return null;
+    }
 
     getTransition(from, to) {
         let parent = null;
