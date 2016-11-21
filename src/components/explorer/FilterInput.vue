@@ -9,7 +9,7 @@
                 </div>
             </div>
             <div class="col s12 m3">
-                <button @click="remove" class="waves-effect waves-light red lighten-2 btn valign right">
+                <button @click="remove" class="waves-effect waves-light thin-button red lighten-2 btn valign right">
                     <i class="fa fa-trash" aria-hidden="true"></i>
                 </button>
             </div>

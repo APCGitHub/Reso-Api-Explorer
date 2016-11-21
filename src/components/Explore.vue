@@ -13,26 +13,26 @@
                                 </button>
                             </div>
                         </div>
-                        <transition name="fade">
-                            <div class="section" v-show="show_queries">
-                                <div v-for="row of chunk" class="row">
-                                    <div class="col m12 l4" v-for="query of row">
-                                        <div class="card hoverable">
-                                            <div class="card-content">
-                                                <span class="card-title">{{query.title}}</span>
-                                                <div>{{query.description}}</div>
-                                            </div>
-                                            <div class="card-action center-align try-query">
-                                                <button @click="tryQuery(query)" class="waves-effect waves-light cyan lighten-1 btn">Try It!</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </transition>
                     </div>
                 </div>
             </div>
+            <transition name="fade">
+                <div class="section" v-show="show_queries">
+                    <div v-for="row of chunk" class="row">
+                        <div class="col m12 l4" v-for="query of row">
+                            <div class="card hoverable">
+                                <div class="card-content">
+                                    <span class="card-title">{{query.title}}</span>
+                                    <div>{{query.description}}</div>
+                                </div>
+                                <div class="card-action center-align">
+                                    <button @click="tryQuery(query)" class="try-query waves-effect waves-light cyan lighten-1 btn">Try It!</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </transition>
             <div class="section">
                 <div class="row">
                     <div :class="{'l6 offset-l3': map.expanded}" class="col m12 l6 query-col no-overflow">
@@ -62,7 +62,7 @@
                                                 </div>
                                             </div>
                                             <div class="col s5">
-                                                <button @click="addFilter" class="waves-effect waves-light cyan lighten-1 btn right"><i class="fa fa-plus" aria-hidden="true"></i></button>
+                                                <button @click="addFilter" class="waves-effect waves-light cyan thin-button lighten-1 btn right"><i class="fa fa-plus" aria-hidden="true"></i></button>
                                             </div>
                                         </div>
                                     </div>
@@ -81,7 +81,7 @@
                                                 </div>
                                             </div>
                                             <div class="col s5">
-                                                <button @click="addOrderby" class="waves-effect waves-light btn cyan lighten-1 right"><i class="fa fa-plus" aria-hidden="true"></i></button>
+                                                <button @click="addOrderby" class="waves-effect waves-light btn cyan thin-button lighten-1 right"><i class="fa fa-plus" aria-hidden="true"></i></button>
                                             </div>
                                         </div>
                                     </div>
