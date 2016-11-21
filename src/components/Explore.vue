@@ -378,13 +378,6 @@
             this.services.map_service.load((map) => {
                 this.map.instance = map;
                 this.services.marker_service = new markerService(this.map.instance);
-
-//                google.maps.event.addDomListener(document.getElementById('map'), "resize", () => {
-//                    console.log('resize');
-//                    var center = this.map.instance.getCenter();
-//                    google.maps.event.trigger(this.map.instance, "resize");
-//                    this.map.instance.setCenter(center);
-//                });
             });
 
             //Handle query click scroll
