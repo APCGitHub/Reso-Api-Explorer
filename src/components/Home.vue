@@ -13,7 +13,7 @@
                                         </div>
                                         <div class="col s9 m8">
                                             <div class="center-align">
-                                                <span class="card-title">Welcome to Reso MD.</span>
+                                                <span class="card-title">Welcome to {{site_name}}</span>
                                                 <br>
                                                 <span class="card-title"><small>powered by <a href="https://retsrabbit.com" target="_blank">Rets Rabbit</a></small></span>
                                             </div>
@@ -54,10 +54,12 @@
 </template>
 
 <script type="text/babel">
+    import config from '../config/env';
+
     export default {
         data() {
             return {
-
+                site_name: config.ENV.APP_NAME//
             }
         },
         methods: {
