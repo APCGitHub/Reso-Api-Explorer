@@ -3,15 +3,23 @@
         <div class="navbar-fixed">
             <nav class="deep-orange lighten-1 navbar">
                 <div class="nav-wrapper">
-                    <router-link to="/" class="brand-logo">{{siteName}}</router-link>
+                    <router-link to="/" tag="a" class="brand-logo">{{siteName}}</router-link>
+                    <a href="#" data-activates="mobile-demo" class="button-collapse">
+                        <i class="fa fa-bars" aria-hidden="true"></i>
+                    </a>
                     <ul class="right hide-on-med-and-down">
+                        <router-link :to="{name: 'home'}" tag="li"><a>Home</a></router-link>
+                        <router-link :to="{name: 'servers.index'}" tag="li"><a>Servers</a></router-link>
+                        <li><a href="https://retsrabbit.com" target="_blank">Rets Rabbit</a></li>
+                    </ul>
+                    <ul class="side-nav" id="mobile-demo">
                         <router-link :to="{name: 'home'}" tag="li"><a>Home</a></router-link>
                         <router-link :to="{name: 'servers.index'}" tag="li"><a>Servers</a></router-link>
                         <li><a href="https://retsrabbit.com" target="_blank">Rets Rabbit</a></li>
                     </ul>
                 </div>
             </nav>
-            <nav class="deep-orange lighten-1 breadcrumbs">
+            <nav class="deep-orange lighten-2 breadcrumbs">
                 <div class="nav-wrapper">
                     <div class="col s12">
                         <breadcrumbs></breadcrumbs>
@@ -57,8 +65,24 @@
         },
         mounted () {
             $(document).ready(() => {
+                //Init the sidenav
+                $(".button-collapse").sideNav({
+                    closeOnClick: true,
+                    draggable: true
+                });
+
                 $(window).scroll(() => {
                     this.scroll.did = true;
+                });
+
+                //Make sure the nav is closed if we aren't on mobile
+                $(window).resize(function () {
+                    let width = $(window).width();
+
+                    //TODO: This could be better optimized
+                    if(width > 600){
+                        $('.button-collapse').sideNav('hide');
+                    }
                 });
             });
 
