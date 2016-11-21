@@ -7,7 +7,7 @@
                         <div class="row">
                             <div class="col s12">
                                 <span class="card-title"><strong>Example Queries</strong></span>
-                                <button @click="toggleQueryBox" class="waves-effect waves-light btn right">
+                                <button @click="toggleQueryBox" class="waves-effect waves-light cyan lighten-1 btn right">
                                     <span v-show="!show_queries">Show</span>
                                     <span v-show="show_queries">Hide</span>
                                 </button>
@@ -17,13 +17,13 @@
                             <div class="section" v-show="show_queries">
                                 <div v-for="row of chunk" class="row">
                                     <div class="col m12 l4" v-for="query of row">
-                                        <div class="card teal lighten-4 hoverable">
+                                        <div class="card hoverable">
                                             <div class="card-content">
-                                                <span class="card-title white-text">{{query.title}}</span>
+                                                <span class="card-title">{{query.title}}</span>
                                                 <div>{{query.description}}</div>
                                             </div>
                                             <div class="card-action center-align try-query">
-                                                <button @click="tryQuery(query)" class="waves-effect waves-light btn">Try It!</button>
+                                                <button @click="tryQuery(query)" class="waves-effect waves-light cyan lighten-1 btn">Try It!</button>
                                             </div>
                                         </div>
                                     </div>
@@ -62,7 +62,7 @@
                                                 </div>
                                             </div>
                                             <div class="col s5">
-                                                <button @click="addFilter" class="waves-effect waves-light btn right"><i class="fa fa-plus" aria-hidden="true"></i></button>
+                                                <button @click="addFilter" class="waves-effect waves-light cyan lighten-1 btn right"><i class="fa fa-plus" aria-hidden="true"></i></button>
                                             </div>
                                         </div>
                                     </div>
@@ -81,7 +81,7 @@
                                                 </div>
                                             </div>
                                             <div class="col s5">
-                                                <button @click="addOrderby" class="waves-effect waves-light btn right"><i class="fa fa-plus" aria-hidden="true"></i></button>
+                                                <button @click="addOrderby" class="waves-effect waves-light btn cyan lighten-1 right"><i class="fa fa-plus" aria-hidden="true"></i></button>
                                             </div>
                                         </div>
                                     </div>
@@ -106,7 +106,7 @@
                                         <button @click="clear" class="btn waves-effect red lighten-2 waves-light btn"><i class="fa fa-times left" aria-hidden="true"></i>Clear</button>
                                     </div>
                                     <div class="col s6 center-align">
-                                        <button @click="search" class="btn waves-effect waves-light btn" :disabled="errors.any() || query.searching">
+                                        <button @click="search" class="btn waves-effect cyan lighten-1 waves-light btn" :disabled="errors.any() || query.searching">
                                             <span v-show="!query.searching">
                                                 <i class="fa fa-search left" aria-hidden="true"></i>Search
                                             </span>
@@ -125,12 +125,6 @@
                                 <div class="row mb0">
                                     <div class="col s12">
                                         <span class="card-title">Map</span>
-                                        <!--
-                                        <button class="waves-effect waves-light btn right" @click="toggleMapSize">
-                                            <span v-show="map.expanded">Shrink</span>
-                                            <span v-show="!map.expanded">Expand</span>
-                                        </button>
-                                        -->
                                     </div>
                                 </div>
                                 <div class="map-help">
@@ -151,8 +145,8 @@
                                         <div class="card-title">Query</div>
                                     </div>
                                     <div class="col s6" v-show="show_edit_button">
-                                        <router-link v-if="server" :to="{name: 'servers.edit', params: {id: server.id}}" tag="button" class="right waves-effect waves-light btn thin-button">Edit Server</router-link>
-                                        <button v-if="!server" class="right waves-effect waves-light btn thin-button">Edit Server</button>
+                                        <router-link v-if="server" :to="{name: 'servers.edit', params: {id: server.id}}" tag="button" class="right waves-effect cyan lighten-1 waves-light btn thin-button">Edit Server</router-link>
+                                        <button v-if="!server" class="right waves-effect cyan lighten-1 waves-light btn thin-button">Edit Server</button>
                                     </div>
                                 </div>
                                 <div class="row">

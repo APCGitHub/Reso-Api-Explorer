@@ -43,7 +43,7 @@
                             </div>
                             <div class="row mb0">
                                 <div class="col s12 center-align">
-                                    <button :disabled="errors.any()" class="waves-effect waves-light btn">Create</button>
+                                    <button :disabled="errors.any()" class="waves-effect waves-light cyan lighten-1 btn">Create</button>
                                 </div>
                             </div>
                         </form>

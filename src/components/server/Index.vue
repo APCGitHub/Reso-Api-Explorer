@@ -26,10 +26,10 @@
                                     <div class="card-action">
                                         <div class="row mb0">
                                             <div class="col s6">
-                                                <router-link :to="{name: 'explore', params: {id: server.id}}" tag="button" class="btn waves-effect waves-light teal thin-button lighten-1"><i class="fa fa-bolt" aria-hidden="true"></i>&nbsp;&nbsp;Use</router-link>
+                                                <router-link :to="{name: 'explore', params: {id: server.id}}" tag="button" class="btn waves-effect waves-light cyan thin-button lighten-1"><i class="fa fa-bolt" aria-hidden="true"></i>&nbsp;&nbsp;Use</router-link>
                                             </div>
                                             <div class="col s6">
-                                                <router-link :to="{name: 'servers.edit', params: {id: server.id}}" tag="button" class="btn waves-effect waves-light teal lighten-1 thin-button right"><i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;&nbsp;Edit</router-link>
+                                                <router-link :to="{name: 'servers.edit', params: {id: server.id}}" tag="button" class="btn waves-effect waves-light cyan lighten-1 thin-button right"><i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;&nbsp;Edit</router-link>
                                             </div>
                                         </div>
                                     </div>
@@ -40,7 +40,7 @@
                 </div>
             </div>
             <div class="fixed-action-btn" style="bottom: 45px; right: 24px;">
-                <router-link :to="{name: 'servers.create'}" tag="button" class="btn-floating btn-large waves-effect waves-light teal lighten-1">
+                <router-link :to="{name: 'servers.create'}" tag="button" class="btn-floating btn-large waves-effect waves-light cyan lighten-1">
                     <i class="fa fa-plus"></i>
                 </router-link>
             </div>

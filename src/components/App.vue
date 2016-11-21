@@ -1,7 +1,7 @@
 <template>
     <div id="wrapper">
         <div class="navbar-fixed">
-            <nav class="teal darken-1 navbar">
+            <nav class="deep-orange lighten-1 navbar">
                 <div class="nav-wrapper">
                     <router-link to="/" class="brand-logo">{{siteName}}</router-link>
                     <ul class="right hide-on-med-and-down">
@@ -10,7 +10,7 @@
                     </ul>
                 </div>
             </nav>
-            <nav class="teal breadcrumbs">
+            <nav class="deep-orange lighten-1 breadcrumbs">
                 <div class="nav-wrapper">
                     <div class="col s12">
                         <breadcrumbs></breadcrumbs>

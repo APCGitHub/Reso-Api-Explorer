@@ -33,6 +33,12 @@
             }
         },
         updated () {
+            /**
+             * NOTE: Andrew Clinton 11/21/16
+             *
+             * {input_data} wasn't updating when the parent updated...not sure why
+             */
+
             this.input_data = this.data;
         },
         methods: {
