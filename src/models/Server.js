@@ -4,6 +4,7 @@
 import shortId from 'shortid';
 import config from '../config/env';
 import Promise from 'es6-promise';
+import Moment from 'moment';
 
 export default class Server {
     constructor(data) {
@@ -32,7 +33,14 @@ export default class Server {
         //Fill in any that caller says to
         for(let key in data){
             if(~Server.fillable.indexOf(key)){
-                this[key] = data[key];
+                if(~Server.dates.indexOf(key)){
+                    if(data[key])
+                        this[key] = Moment(data[key]);
+                    else
+                        this[key] = '';
+                } else {
+                    this[key] = data[key];
+                }
             }
         }
     }
@@ -120,9 +128,16 @@ export default class Server {
             'client_id',
             'client_secret',
             'access_token',
+            'expires_at',
             'data_endpoint',
             'auth_endpoint',
             'token_endpoint'
+        ];
+    }
+
+    static get dates() {
+        return [
+            'expires_at'
         ];
     }
 
@@ -209,7 +224,7 @@ export default class Server {
                         for (let k = 0; k < Server.fillable.length; k++) {
                             let key = Server.fillable[k];
 
-                            if(key === 'access_token')
+                            if(key === 'access_token' || key === 'expires_at')
                                 continue;
 
                             store_server[key] = servers[j][key];

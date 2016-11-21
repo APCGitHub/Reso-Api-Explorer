@@ -3,6 +3,7 @@
  */
 import Vue from 'vue';
 import Promise from 'es6-promise';
+import Moment from 'moment';
 
 export default class AccessTokenService {
     constructor(server){
@@ -25,5 +26,12 @@ export default class AccessTokenService {
                 reject(err);
             });
         });
+    }
+
+    static setExpiresAt(expires) {
+        let now = Moment();
+        now.add('seconds', expires);
+
+        return now;
     }
 }
