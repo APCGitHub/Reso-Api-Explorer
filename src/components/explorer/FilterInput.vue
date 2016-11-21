@@ -32,6 +32,9 @@
                 input_data: this.data
             }
         },
+        updated () {
+            this.input_data = this.data;
+        },
         methods: {
             remove() {
                 this.$emit(this.eventName, this.index);
