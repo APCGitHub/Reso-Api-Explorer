@@ -6,11 +6,16 @@ import GoogleMaps from 'google-maps'
 export default class MarkerService {
     constructor(map){
         this.map = map;
+        this.info_window = new google.maps.InfoWindow({
+            content: ''
+        });
+        this.markers = [];
     }
 
     plotMarkers(listings){
-        let markers = [];
         let bounds = new google.maps.LatLngBounds();
+
+        this.clearMarkers();
 
         for(let i = 0, len = listings.length; i < len; i++){
             let lat = 0, lng = 0, l = listings[i];
@@ -31,12 +36,34 @@ export default class MarkerService {
                     animation: google.maps.Animation.DROP
                 });
 
-                markers.push(m);
+                this.setInfoWindow(m);
+
+                this.markers.push(m);
 
                 bounds.extend(pos)
             }
         }
 
         this.map.fitBounds(bounds);
+    }
+
+    clearMarkers () {
+        for(let i = 0, len = this.markers.length; i < len; i++){
+            this.markers[i].setMap(null);
+        }
+    }
+
+    setInfoWindow(marker) {
+        let self = this;
+        google.maps.event.addListener(marker, 'click', function () {
+            let content = `
+                <div>
+                    <p><b>Lat:</b> ${this.position.lat().toFixed(5)}</p>
+                    <p><b>Lng:</b> ${this.position.lng().toFixed(5)}</p>
+                </div>
+            `;
+            self.info_window.setContent(content);
+            self.info_window.open(self.map, this);
+        });
     }
 }
