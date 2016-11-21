@@ -7,6 +7,7 @@
                     <ul class="right hide-on-med-and-down">
                         <router-link :to="{name: 'home'}" tag="li"><a>Home</a></router-link>
                         <router-link :to="{name: 'servers.index'}" tag="li"><a>Servers</a></router-link>
+                        <li><a href="https://retsrabbit.com" target="_blank">Rets Rabbit</a></li>
                     </ul>
                 </div>
             </nav>
@@ -45,10 +46,51 @@
                 transition: {
                     enter: '',
                     leave: ''
+                },
+                scroll: {
+                    delta: 5,
+                    did: false,
+                    last_scroll_top: 0,
+                    nav_height: 63
                 }
             }
         },
-        methods: {}
+        mounted () {
+            $(document).ready(() => {
+                $(window).scroll(() => {
+                    this.scroll.did = true;
+                });
+            });
+
+            setInterval(() => {
+                if (this.scroll.did) {
+                    this.hasScrolled();
+                    this.scroll.did = false;
+                }
+            }, 250);
+        },
+        methods: {
+            hasScrolled () {
+                let st = $(document).scrollTop();
+
+                if (Math.abs(this.scroll.last_scroll_top - st) <= this.scroll.delta)
+                    return;
+
+                // If current position > last position AND scrolled past navbar...
+                if (st > this.scroll.last_scroll_top && st > this.scroll.nav_height){
+                    // Scroll Down
+                    $('nav.breadcrumbs').addClass('nav-up');
+                } else {
+                    // Scroll Up
+                    // If did not scroll past the document (possible on mac)...
+                    if(st + $(window).height() < $(document).height()) {
+                        $('nav.breadcrumbs').removeClass('nav-up');
+                    }
+                }
+
+                this.scroll.last_scroll_top = st;
+            }
+        }
     }
 </script>
 
