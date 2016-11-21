@@ -37,7 +37,7 @@ const routes = [
 ];
 
 let router = new VueRouter({
-    linkActiveClass: 'active',
+    linkActiveClass: '',
     /*mode: 'history',*/
     base: __dirname,
     routes
