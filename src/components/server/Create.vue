@@ -5,7 +5,8 @@
                 <div class="card">
                     <div class="card-content">
                         <span class="card-title">New Server</span>
-                        <form @submit="validateBeforeSubmit">
+                        <div class="divider"></div>
+                        <form @submit="validateBeforeSubmit" class="mt-sm">
                             <div class="row">
                                 <div class="input-field col s12">
                                     <input placeholder="Matrix" name="name" type="text" id="name" v-model="name" v-validate.initial="name" data-rules="required" :class="{'invalid': errors.has('name')}">
