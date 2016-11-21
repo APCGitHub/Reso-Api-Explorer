@@ -14,7 +14,7 @@
                 </button>
             </div>
         </div>
-        <div class="input-field col s12 m4 offset-m4" v-if="(index+1) != length">
+        <div class="input-field col s12 m3 offset-m4" v-if="(index+1) != length">
             <select name="'join_' + index" v-model="input_data.join" class="browser-default">
                 <option value=""></option>
                 <option value="and">and</option>

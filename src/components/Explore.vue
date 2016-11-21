@@ -19,7 +19,7 @@
             <transition name="fade">
                 <div class="section" v-show="show_queries">
                     <div v-for="row of chunk" class="row">
-                        <div class="col m12 l4" v-for="query of row">
+                        <div class="col s12 m12 l4" v-for="query of row">
                             <div class="card hoverable">
                                 <div class="card-content">
                                     <span class="card-title">{{query.title}}</span>
@@ -35,7 +35,7 @@
             </transition>
             <div class="section">
                 <div class="row">
-                    <div :class="{'l6 offset-l3': map.expanded}" class="col m12 l6 query-col no-overflow">
+                    <div :class="{'l6 offset-l3': map.expanded}" class="col s12 m12 l6 query-col no-overflow">
                         <div class="card query-builder-wrapper">
                             <div class="card-content">
                                 <span class="card-title">Query Builder</span>
@@ -119,7 +119,7 @@
                             </div>
                         </div>
                     </div>
-                    <div :class="{'l12 big-map': map.expanded}" id="map-col" class="col m12 l6">
+                    <div :class="{'l12 big-map': map.expanded}" id="map-col" class="col s12 m12 l6">
                         <div class="card">
                             <div class="card-content">
                                 <div class="row mb0">
@@ -210,8 +210,9 @@
     import swal from 'sweetalert';
     import Promise from 'es6-promise';
     import config from '../config/env';
+    import Moment from 'moment';
 
-    export default {
+    export default {//
         components: {Results, FilterInput, OrderbyInput},
         data() {
             return {
@@ -354,6 +355,12 @@
                 } else { //no redirect url so we are hitting for the first time
                     if(!this.server.access_token){
                         this.fetchAuthCode();
+                    } else {
+                        let now = Moment();
+
+                        if(now > this.server.expires_at){
+                            this.fetchAuthCode();
+                        }
                     }
                 }
             }, (err) => {
@@ -537,10 +544,12 @@
                 return new Promise((resolve, reject) => {
                     this.services.accesstoken_service.getToken(client_secret, this.code).then((res) => {
                         let resBody = res.body;
+                        let expires_at = accessTokenSerivce.setExpiresAt(resBody.expires_in);
 
                         //Try to update the server with the new access token
                         this.server.update({
-                            access_token: resBody.access_token
+                            access_token: resBody.access_token,
+                            expires_at: expires_at
                         }).then((server) => {
                             this.server = server;
 
@@ -549,7 +558,6 @@
                             reject();
                         });
                     }, (err) => {
-                        console.log(err);
                         reject(err);
                     });
                 });
