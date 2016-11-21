@@ -209,6 +209,9 @@ export default class Server {
                         for (let k = 0; k < Server.fillable.length; k++) {
                             let key = Server.fillable[k];
 
+                            if(key === 'access_token')
+                                continue;
+
                             store_server[key] = servers[j][key];
                         }
                     }
