@@ -5,6 +5,12 @@
 nav {
   transition: height 0.3s ease;
 
+  .button-collapse {
+    float: right;
+    margin-right: 5px;
+    cursor: pointer;
+  }
+
   &.navbar {
     z-index:10;
   }
