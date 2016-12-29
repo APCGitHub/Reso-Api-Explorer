@@ -22,10 +22,12 @@
                                 </div>
                                 <div class="divider mt-md"></div>
                                 <div class="section mt-sm">
-                                    <h5 class="center-align">Designed by developers. For developers.</h5>
+                                    <p class="center-align">This is an open source, browser based, API explorer for testing and evaluating real estate API servers that adhere to the <a href="http://www.reso.org/reso-web-api/" target="_blank">RESO Web API standard</a>.</p>
+                                    <p class="center-align">Click the button below to add your RESO Web API server or use our default demo server to check out the explorer.</p>
                                     <div class="center-align mt-lg">
                                         <router-link to="/servers" class="waves-effect waves-light cyan lighten-1 btn">Go To Servers</router-link>
                                     </div>
+                                    <p>Disclaimer: This tool is not affiliated with the Real Estate Standards Organization (<a href="http://reso.org" target="_blank">RESO</a>). The source code for this tool can be found <a href="https://github.com/Anecka/Reso-Api-Explorer">here</a>. </p>
                                 </div>
                             </div>
                         </div>
