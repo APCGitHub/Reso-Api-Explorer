@@ -9,35 +9,35 @@
                         <form @submit="validateBeforeSubmit" class="mt-sm">
                             <div class="row">
                                 <div class="input-field col s12">
-                                    <input name="name" type="text" id="name" v-validate.initial="server.name" v-model="server.name" data-rules="required" :class="{'invalid': errors.has('server.name')}">
+                                    <input name="name" type="text" id="name" v-validate.initial="server.name" v-model="server.name" data-vv-rules="required" :class="{'invalid': errors.has('server.name')}">
                                     <label for="name" class="active">Name</label>
                                     <span class="error red-text darken-2" v-show="errors.has('server.name')">{{ errors.first('server.name') }}</span>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="input-field col s12">
-                                    <input name="client_id" type="text" id="client_id" v-validate.initial="server.client_id" v-model="server.client_id" data-rules="required" :class="{'invalid': errors.has('server.client_id')}">
+                                    <input name="client_id" type="text" id="client_id" v-validate.initial="server.client_id" v-model="server.client_id" data-vv-rules="required" :class="{'invalid': errors.has('server.client_id')}">
                                     <label for="client_id" class="active">Client ID</label>
                                     <span class="error red-text darken-2" v-show="errors.has('server.client_id')">{{ errors.first('server.client_id') }}</span>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="input-field col s12">
-                                    <input name="auth_endpoint" type="text" id="auth_endpoint" v-model="server.auth_endpoint" v-validate.initial="server.auth_endpoint" data-rules="required" :class="{'invalid': errors.has('server.auth_endpoint')}">
+                                    <input name="auth_endpoint" type="text" id="auth_endpoint" v-model="server.auth_endpoint" v-validate.initial="server.auth_endpoint" data-vv-rules="required" :class="{'invalid': errors.has('server.auth_endpoint')}">
                                     <label for="auth_endpoint" class="active">Auth Endpoint</label>
                                     <span class="error red-text darken-2" v-show="errors.has('server.auth_endpoint')">{{ errors.first('server.auth_endpoint') }}</span>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="input-field col s12">
-                                    <input name="token_endpoint" type="text" id="token_endpoint" v-model="server.token_endpoint" v-validate.initial="server.token_endpoint" data-rules="required" :class="{'invalid': errors.has('server.token_endpoint')}">
+                                    <input name="token_endpoint" type="text" id="token_endpoint" v-model="server.token_endpoint" v-validate.initial="server.token_endpoint" data-vv-rules="required" :class="{'invalid': errors.has('server.token_endpoint')}">
                                     <label for="token_endpoint" class="active">Token Endpoint</label>
                                     <span class="error red-text darken-2" v-show="errors.has('server.token_endpoint')">{{ errors.first('server.token_endpoint') }}</span>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="input-field col s12">
-                                    <input name="token_endpoint" type="text" id="data_endpoint" v-model="server.data_endpoint" v-validate.initial="server.data_endpoint" data-rules="required" :class="{'invalid': errors.has('server.data_endpoint')}">
+                                    <input name="token_endpoint" type="text" id="data_endpoint" v-model="server.data_endpoint" v-validate.initial="server.data_endpoint" data-vv-rules="required" :class="{'invalid': errors.has('server.data_endpoint')}">
                                     <label for="data_endpoint" class="active">Data Endpoint</label>
                                     <span class="error red-text darken-2" v-show="errors.has('server.data_endpoint')">{{ errors.first('server.data_endpoint') }}</span>
                                 </div>

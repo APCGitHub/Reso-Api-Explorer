@@ -9,35 +9,35 @@
                         <form @submit="validateBeforeSubmit" class="mt-sm">
                             <div class="row">
                                 <div class="input-field col s12">
-                                    <input placeholder="Matrix" name="name" type="text" id="name" v-model="name" v-validate.initial="name" data-rules="required" :class="{'invalid': errors.has('name')}">
+                                    <input placeholder="Matrix" name="name" type="text" id="name" v-model="name" v-validate.initial="name" data-vv-rules="required" :class="{'invalid': errors.has('name')}">
                                     <label for="name" class="active">Name</label>
                                     <span class="error red-text darken-2" v-show="errors.has('name')">{{ errors.first('name') }}</span>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="input-field col s12">
-                                    <input placeholder="random_string" name="client_id" type="text" id="client_id" v-model="client_id" v-validate.initial="client_id" data-rules="required" :class="{'invalid': errors.has('client_id')}">
+                                    <input placeholder="random_string" name="client_id" type="text" id="client_id" v-model="client_id" v-validate.initial="client_id" data-vv-rules="required" :class="{'invalid': errors.has('client_id')}">
                                     <label for="client_id" class="active">Client ID</label>
                                     <span class="error red-text darken-2" v-show="errors.has('client_id')">{{ errors.first('client_id') }}</span>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="input-field col s12">
-                                    <input placeholder="http://api.com/api/oauth/authorize" name="auth_endpoint" type="text" id="auth_endpoint" v-model="auth_endpoint" v-validate.initial="auth_endpoint" data-rules="required" :class="{'invalid': errors.has('auth_endpoint')}">
+                                    <input placeholder="http://api.com/api/oauth/authorize" name="auth_endpoint" type="text" id="auth_endpoint" v-model="auth_endpoint" v-validate.initial="auth_endpoint" data-vv-rules="required" :class="{'invalid': errors.has('auth_endpoint')}">
                                     <label class="active" for="auth_endpoint">Auth Endpoint</label>
                                     <span class="error red-text darken-2" v-show="errors.has('auth_endpoint')">{{ errors.first('auth_endpoint') }}</span>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="input-field col s12">
-                                    <input placeholder="http://api.com/api/oauth/access_token" name="token_endpoint" type="text" id="token_endpoint" v-model="token_endpoint" v-validate.initial="token_endpoint" data-rules="required" :class="{'invalid': errors.has('token_endpoint')}">
+                                    <input placeholder="http://api.com/api/oauth/access_token" name="token_endpoint" type="text" id="token_endpoint" v-model="token_endpoint" v-validate.initial="token_endpoint" data-vv-rules="required" :class="{'invalid': errors.has('token_endpoint')}">
                                     <label class="active" for="token_endpoint">Token Endpoint</label>
                                     <span class="error red-text darken-2" v-show="errors.has('token_endpoint')">{{ errors.first('token_endpoint') }}</span>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="input-field col s12">
-                                    <input placeholder="http://api.com/api/oauth/access_token" name="data_endpoint" type="text" id="data_endpoint" v-model="data_endpoint" v-validate.initial="data_endpoint" data-rules="required" :class="{'invalid': errors.has('data_endpoint')}">
+                                    <input placeholder="http://api.com/api/oauth/access_token" name="data_endpoint" type="text" id="data_endpoint" v-model="data_endpoint" v-validate.initial="data_endpoint" data-vv-rules="required" :class="{'invalid': errors.has('data_endpoint')}">
                                     <label class="active" for="data_endpoint">Data Endpoint</label>
                                     <span class="error red-text darken-2" v-show="errors.has('data_endpoint')">{{ errors.first('data_endpoint') }}</span>
                                 </div>
