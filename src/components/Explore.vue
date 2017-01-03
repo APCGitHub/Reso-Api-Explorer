@@ -88,12 +88,12 @@
                                     <div class="divider"></div>
                                     <div class="row mt-md mb0">
                                         <div class="input-field col s4">
-                                            <input type="tel" v-validate data-rules="numeric" :class="{'invalid': errors.has('top')}" placeholder="100" name="top" v-model="query_builder.top" id="top">
+                                            <input type="tel" v-validate data-vv-rules="numeric" :class="{'invalid': errors.has('top')}" placeholder="100" name="top" v-model="query_builder.top" id="top">
                                             <label for="top" class="active">$top</label>
                                             <span class="error red-text darken-2" v-show="errors.has('top')">{{ errors.first('top') }}</span>
                                         </div>
                                         <div class="input-field col s4 offset-s2">
-                                            <input type="tel" v-validate data-rules="numeric" :class="{'invalid': errors.has('skip')}" placeholder="10" name="skip" v-model="query_builder.skip" id="skip">
+                                            <input type="tel" v-validate data-vv-rules="numeric" :class="{'invalid': errors.has('skip')}" placeholder="10" name="skip" v-model="query_builder.skip" id="skip">
                                             <label for="skip" class="active">$skip</label>
                                             <span class="error red-text darken-2" v-show="errors.has('skip')">{{ errors.first('skip') }}</span>
                                         </div>

@@ -1,7 +1,7 @@
 <template>
     <div class="valign-wrapper">
         <div class="input-field col s5">
-            <input v-validate data-rules="required" type="text" :id="name" :name="name" v-model="input_data.value">
+            <input v-validate data-vv-rules="required" type="text" :id="name" :name="name" v-model="input_data.value">
             <label class="active" :for="name">$orderby</label>
             <span class="error red-text darken-2" v-show="errors.has(name)">{{ errors.first(name) }}</span>
         </div>

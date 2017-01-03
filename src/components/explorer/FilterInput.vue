@@ -3,7 +3,7 @@
         <div class="valign-wrapper">
             <div class="col s12 m9">
                 <div class="input-field">
-                    <input v-validate data-rules="required" :class="{'invalid': errors.has(name)}" v-model="input_data.value" :id="name" :name="name" type="text" placeholder="ListPrice ge 100000">
+                    <input v-validate data-vv-rules="required" :class="{'invalid': errors.has(name)}" v-model="input_data.value" :id="name" :name="name" type="text" placeholder="ListPrice ge 100000">
                     <label class="active" :for="name">$filter</label>
                     <span class="error red-text darken-2" v-show="errors.has(name)">{{ errors.first(name) }}</span>
                 </div>
