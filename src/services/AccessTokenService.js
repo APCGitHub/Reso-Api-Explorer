@@ -2,7 +2,7 @@
  * Created by aclinton on 11/2/16.
  */
 import Vue from 'vue';
-import Promise from 'es6-promise';
+import Promise from 'bluebird';
 import Moment from 'moment';
 
 export default class AccessTokenService {
