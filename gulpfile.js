@@ -12,14 +12,14 @@ gulp.task('build-config', function () {
 elixir(function (mix){
     mix.task('build-config');
 
-    mix.copy('./bower_components/materialize/fonts', './public/fonts');
-    mix.copy('./bower_components/font-awesome/fonts', './public/fonts');
-    mix.copy('./public/fonts', './build/fonts');
+    mix.copy('bower_components/materialize/fonts', 'public/fonts');
+    mix.copy('bower_components/font-awesome/fonts', 'public/fonts');
+    mix.copy('public/fonts', 'build/fonts');
 
     mix.sass([
             'app.scss'
         ],
         './public/css/app.css');
 
-    mix.copy('./public/css/app.css', './build/css/app.css');
+    mix.copy('public/css/app.css', 'build/css/app.css');
 });
