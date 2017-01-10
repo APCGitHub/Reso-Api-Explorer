@@ -2,7 +2,7 @@
  * Created by aclinton on 11/2/16.
  */
 import Server from '../models/Server';
-import Promise from 'es6-promise';
+import Promise from 'bluebird';
 import Config from '../config/env';
 
 export default class ServerService {
@@ -30,5 +30,29 @@ export default class ServerService {
                 resolve();
             });
         });
+    }
+
+    static openIdConnectUrl(server = {}) {
+        let url = server.auth_endpoint;
+        let params = [];
+
+        if(server.config && server.config.openid){
+            for(let i = 0; i < server.config.openid.length; i++){
+                params.push({
+                    key: server.config.openid[i].key,
+                    value: server.config.openid[i].value
+                });
+            }
+        }
+
+        if(params.length){
+            params = params.map((p) => {
+                return `${p.key}=${p.value}`;
+            });
+        }
+
+        url += "?" + params.join('&');
+
+        return url;
     }
 }
