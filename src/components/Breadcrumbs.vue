@@ -9,6 +9,8 @@
 
 <script type="text/babel">
     import BreadcrumbService from '../services/BreadcrumbService';
+    window.$ = window.jQuery = require('materialize-css/node_modules/jquery/dist/jquery.js');
+    require('materialize-css');
 
     export default {
         breadcrumbService: null,

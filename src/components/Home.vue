@@ -60,6 +60,8 @@
 
 <script type="text/babel">
     import config from '../config/env';
+    window.$ = window.jQuery = require('materialize-css/node_modules/jquery/dist/jquery.js');
+    require('materialize-css');
 
     export default {
         data() {
