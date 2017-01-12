@@ -202,15 +202,17 @@
     import accessTokenSerivce from '../services/AccessTokenService';
     import serverService from '../services/ServerService';
     import Results from './Results.vue';
-    import FilterInput from './explorer/FilterInput.vue';
-    import OrderbyInput from './explorer/OrderbyInput.vue';
+    import FilterInput from './explorer/components/FilterInput.vue';
+    import OrderbyInput from './explorer/components/OrderbyInput.vue';
     import Server from '../models/Server';
     import _ from 'lodash';
     import $ from 'jquery';
     import swal from 'sweetalert';
-    import Promise from 'es6-promise';
+    import Promise from 'bluebird';
     import config from '../config/env';
     import Moment from 'moment';
+    window.$ = window.jQuery = require('materialize-css/node_modules/jquery/dist/jquery.js');
+    require('materialize-css');
 
     export default {//
         components: {Results, FilterInput, OrderbyInput},
@@ -251,6 +253,7 @@
         created() {
             let id = this.$route.params.id;
 
+            //Server service
             this.services.server_service = new serverService();
 
             //Query Service
@@ -272,97 +275,6 @@
                  * Instantiate the services
                  */
                 this.services.accesstoken_service = new accessTokenSerivce(this.server);
-
-                /**
-                 * If there is a redirect code in the url
-                 */
-                if(this.$route.query.code){
-                    this.code = this.$route.query.code;
-
-                    //If this is a default server
-                    if(this.server.client_secret){
-                        this.getToken(this.server.client_secret).then(() => {
-                            swal({
-                                title: 'Success',
-                                text: 'Grabbed a new access token!',
-                                type: 'success'
-                            });
-
-                            //Get rid of the code from the url
-                            let url = window.location.href;
-                            let i = url.indexOf('?code');
-
-                            url = url.substring(0, i);
-
-                            window.location = url;
-                        }, () => {
-                            swal({
-                                title: 'Uh oh',
-                                text: 'There was a problem getting the access token',
-                                type: 'warning'
-                            });
-                        });
-                    } else {
-                        //This is not a default server so ask for a secret
-                        swal({
-                            title: "Credentials",
-                            text: "Please supply your client_secret.",
-                            type: "input",
-                            showCancelButton: true,
-                            closeOnConfirm: false,
-                            animation: "slide-from-top",
-                            inputPlaceholder: "secret"
-                        },
-                        (client_secret) => {
-                            //If they cancel then back 'em out of there real good
-                            if (client_secret === false) {
-                                this.$router.replace('/servers');
-                                return false;
-                            }
-
-                            //If empty make sure they try again
-                            if (client_secret === "") {
-                                swal.showInputError("You need to write something!");
-                                return false
-                            }
-
-                            //See what we can do about getting a new access_token
-                            if(this.services.accesstoken_service){
-                                this.getToken(client_secret).then(() => {
-                                    swal({
-                                        title: 'Success',
-                                        text: 'Grabbed a new access token!',
-                                        type: 'success'
-                                    });
-
-                                    //Get rid of the code from the url
-                                    let url = window.location.href;
-                                    let i = url.indexOf('?code');
-
-                                    url = url.substring(0, i);
-
-                                    window.location = url;
-                                }, () => {
-                                    swal({
-                                        title: 'Uh oh',
-                                        text: 'There was a problem getting the access token',
-                                        type: 'warning'
-                                    });
-                                });
-                            }
-                        });
-                    }
-                } else { //no redirect url so we are hitting for the first time
-                    if(!this.server.access_token){
-                        this.fetchAuthCode();
-                    } else {
-                        let now = Moment();
-
-                        if(now > this.server.expires_at){
-                            this.fetchAuthCode();
-                        }
-                    }
-                }
             }, (err) => {
                 //Could not find that server
                 this.$router.replace('/servers');
@@ -516,11 +428,13 @@
              * This method grabs an auth code from the authorizer if granted access
              */
             fetchAuthCode() {
-                let url = this.server.auth_endpoint;
+                // let url = this.server.auth_endpoint;
 
-                url += '?client_id=' + this.server.client_id;
-                url += '&redirect_uri=' + encodeURIComponent(this.server.redirect_uri);
-                url += '&response_type=code';
+                // url += '?client_id=' + this.server.client_id;
+                // url += '&redirect_uri=' + encodeURIComponent(this.server.redirect_uri);
+                // url += '&response_type=code';
+
+                let url = serverService.openIdConnectUrl(this.server);
 
                 window.location = url;
             },
