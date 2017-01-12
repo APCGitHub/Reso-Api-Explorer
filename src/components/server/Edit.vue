@@ -1,6 +1,6 @@
 <template>
     <div class="row">
-        <div class="col s12 m6 offset-m3">
+        <div class="col s12 m8 offset-m2">
             <div class="section">
                 <div class="card">
                     <div class="card-content">
@@ -8,10 +8,15 @@
                         <div class="divider"></div>
                         <form @submit="validateBeforeSubmit" class="mt-sm">
                             <div class="row">
-                                <div class="input-field col s12">
-                                    <input name="name" type="text" id="name" v-validate.initial="server.name" v-model="server.name" data-vv-rules="required" :class="{'invalid': errors.has('server.name')}">
-                                    <label for="name" class="active">Name</label>
-                                    <span class="error red-text darken-2" v-show="errors.has('server.name')">{{ errors.first('server.name') }}</span>
+                                <div class="input-field col s6">
+                                    <input placeholder="Matrix" name="name" type="text" id="name" v-model="server.name" v-validate.initial="server.name" data-vv-rules="required" :class="{'invalid': errors.has('name')}">
+                                    <label for="name" class="active">Name <div class="inline-block clickable"><i class="tooltipped fa fa-question-circle clickable" data-position="bottom" data-delay="50" data-tooltip="Human readable name for the server."></i></div></label>
+                                    <span class="error red-text darken-2" v-show="errors.has('name')">{{ errors.first('name') }}</span>
+                                </div>
+                                <div class="input-field col s6">
+                                    <input placeholder="Matrix" name="id" type="text" id="id" v-model="server.id" v-validate.initial="server.id" data-vv-rules="required" :class="{'invalid': errors.has('id')}">
+                                    <label for="id" class="active">Id <div class="inline-block clickable"><i class="tooltipped fa fa-question-circle clickable" data-position="bottom" data-delay="50" data-tooltip="Unique ID so that ReApi knows which server to redirect back to."></i></div></label>
+                                    <span class="error red-text darken-2" v-show="errors.has('id')">{{ errors.first('id') }}</span>
                                 </div>
                             </div>
                             <div class="row">
@@ -42,6 +47,22 @@
                                     <span class="error red-text darken-2" v-show="errors.has('server.data_endpoint')">{{ errors.first('server.data_endpoint') }}</span>
                                 </div>
                             </div>
+                            <div class="row">
+                                <div class="col s12">
+                                    <span class="blue-text clickable" @click="show_advanced = !show_advanced">Advanced</span>
+                                    <div v-show="show_advanced">
+                                        <div class="card-title">OpendID Parameters</div>
+                                        <template v-if="server && server.config">
+                                            <draggable :options="{handle: '.handle'}" :list="server.config.openid">
+                                                <transition-group name="list" tag="div">
+                                                    <open-id-config v-on:remove="deleteOpenIdConfig" :config="config" :key="index" :index="index" v-for="(config, index) in server.config.openid"></open-id-config>
+                                                </transition-group>
+                                            </draggable>
+                                        </template>
+                                        <button type="button" @click="addOpenIDConfig" class="waves-effect waves-light cyan thin-button lighten-1 btn"><i class="fa fa-plus" aria-hidden="true"></i></button>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="row mb0">
                                 <div class="col s12 center-align">
                                     <button :disabled="errors.any()" class="waves-effect waves-light cyan lighten-1 btn">Update</button>
@@ -65,12 +86,18 @@
     import FlashService from '../../services/FlashService';
     import Server from '../../models/Server';
     import swal from 'sweetalert';
+    import OpenIdConfig from './components/OpenIdConfig.vue';
     import Config from '../../config/env';
+    import Draggable from 'vuedraggable';
+    window.$ = window.jQuery = require('materialize-css/node_modules/jquery/dist/jquery.js');
+    require('materialize-css');
 
     export default {
         serverService: null,
+        components: {OpenIdConfig, Draggable},
         data() {
             return {
+                show_advanced: true,
                 server: {
                     id: '',
                     name: '',
@@ -88,7 +115,7 @@
                 let _servers = Config.servers;
 
                 for(let i = 0; i < _servers.length; i++){
-                    if(server.id === _servers[i].id){
+                    if(server.id === _servers[i].id && !_servers[i]['allow_edit']){
                         FlashService.flash('warning', 'You can\'t edit the default Rets Rabbit server!', 3000);
                         this.$router.go(-1);
                     }
@@ -140,6 +167,20 @@
                         });
                     }
                 });
+            },
+            addOpenIDConfig() {
+                let config = {
+                    name: '',
+                    key: '',
+                    value: '',
+                    required: false,
+                    no_value: false
+                };
+
+                this.server.config.openid.push(config);
+            },
+            deleteOpenIdConfig(index) {
+                this.server.config.openid.splice(index, 1);
             }
         }
     }
