@@ -127,6 +127,11 @@ export default class Breadcrumbs {
                         id: 'servers.index',
                         children: [
                             {
+
+                                name: 'OAuth',
+                                id: 'servers.oauth'
+                            },
+                            {
                                 name: 'Create',
                                 id: 'servers.create'
                             },
