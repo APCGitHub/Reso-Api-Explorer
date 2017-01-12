@@ -3,32 +3,23 @@
  */
 import shortId from 'shortid';
 import config from '../config/env';
-import Promise from 'es6-promise';
+import Promise from 'bluebird';
 import Moment from 'moment';
 
 export default class Server {
-    constructor(data) {
+    constructor(data = {}) {
+        for(let i = 0; i < Server.fillable.length; i++){
+            this[Server.fillable[i]] = null;
+        }
+
         /**
          * We might wanna move this logic to a static constructor maybe...
          * This is to allow inflation of Server class objects from raw data
          */
-        if(data.id)
+        if(data && data.id)
             this.id = data.id;
         else
             this.id = shortId.generate();
-
-        //Make sure the redirect_uri is built properly
-        let _url = config.ENV.APP_URL;
-
-        if(_url.substring(_url.length - 1) !== '/')
-            _url += '/';
-
-        this.redirect_uri = _url + '#/explore/' + this.id;
-
-        //Initialize to empty
-        for(let i = 0; i < Server.fillable.length; i++){
-            this[Server.fillable[i]] = '';
-        }
 
         //Fill in any that caller says to
         for(let key in data){
@@ -43,6 +34,38 @@ export default class Server {
                 }
             }
         }
+
+        if(!this.config) {
+            this.config = {
+                'openid': [
+                    {
+                        name: 'Client ID',
+                        key: 'client_id',
+                        value: this.client_id,
+                        required: true,
+                    },
+                    {
+                        _key: 'redirect_uri',
+                        name: 'Redirect URI',
+                        key: 'redirect_uri',
+                        value: null,
+                        no_value: true,
+                        required: true,
+                        encode: true
+                    }
+                ]
+            };
+        }
+    }
+
+    get redirect_uri () {
+        //Make sure the redirect_uri is built properly
+        let _url = config.ENV.APP_URL;
+
+        if(_url.substring(_url.length - 1) !== '/')
+            _url += '/';
+
+        return `${_url}#/explore/${this.id}/oauth`;
     }
 
     /**
@@ -71,6 +94,8 @@ export default class Server {
 
                 //Assumes we will always find and save
                 resolve(this);
+            }).catch(err => {
+                reject(err);
             });
         });
     }
@@ -124,6 +149,7 @@ export default class Server {
      */
     static get fillable() {
         return [
+            'id',
             'name',
             'client_id',
             'client_secret',
@@ -131,14 +157,31 @@ export default class Server {
             'expires_at',
             'data_endpoint',
             'auth_endpoint',
-            'token_endpoint'
+            'token_endpoint',
+            'config', 
         ];
     }
 
+    /**
+     * Mutate to Moment object
+     * 
+     * @return array
+     */
     static get dates() {
         return [
             'expires_at'
         ];
+    }
+
+    /**
+     * Handle more general cast cases
+     * 
+     * @return array
+     */
+    static get casts() {
+        return {
+            'config': 'json'
+        };
     }
 
     /**
@@ -202,6 +245,12 @@ export default class Server {
         });
     }
 
+    /**
+     * Do a batch update of all the servers.
+     * 
+     * @param  array servers
+     * @return Promise
+     */
     static batchUpdate(servers) {
         return new Promise((resolve, reject) => {
             let _servers = localStorage.getItem(Server.key) || [];
