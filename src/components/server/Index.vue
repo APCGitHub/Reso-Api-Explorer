@@ -13,7 +13,7 @@
                 <div class="row">
                     <div class="col s12">
                         <div class="row server-list" v-show="servers.length">
-                            <div class="col s12 m6" v-for="server of servers">
+                            <div class="col s12 m12 l6" v-for="server of servers">
                                 <div class="card server">
                                     <div class="card-content">
                                         <span class="card-title">{{server.name}}</span>
@@ -25,10 +25,25 @@
                                     </div>
                                     <div class="card-action">
                                         <div class="row mb0">
-                                            <div class="col s6">
-                                                <router-link :to="{name: 'explore', params: {id: server.id}}" tag="button" class="btn waves-effect waves-light cyan thin-button lighten-1"><i class="fa fa-bolt" aria-hidden="true"></i>&nbsp;&nbsp;Use</router-link>
+                                            <div class="col s4">
+                                                <router-link 
+                                                    v-if="server.access_token" 
+                                                    :to="{name: 'explore', params: {id: server.id}}" 
+                                                    tag="button" 
+                                                    class="btn waves-effect waves-light cyan thin-button lighten-1">
+                                                        <i class="fa fa-lock" aria-hidden="true"></i>&nbsp;&nbsp;Use
+                                                </router-link>
+                                                <router-link v-else
+                                                    :to="{name: 'servers.oauth', params: {id: server.id}}" 
+                                                    tag="button" 
+                                                    class="btn waves-effect waves-light cyan thin-button lighten-1">
+                                                    <i class="fa fa-lock" aria-hidden="true"></i>&nbsp;&nbsp;OAuth
+                                                </router-link>
                                             </div>
-                                            <div class="col s6">
+                                            <div class="col s4 center-align">
+                                              <button class="btn waves-effect waves-light red lighten-2 thin-button">Clear Token</button>
+                                            </div>
+                                            <div class="col s4">
                                                 <router-link :to="{name: 'servers.edit', params: {id: server.id}}" tag="button" class="btn waves-effect waves-light cyan lighten-1 thin-button right"><i class="fa fa-pencil" aria-hidden="true"></i>&nbsp;&nbsp;Edit</router-link>
                                             </div>
                                         </div>
@@ -55,7 +70,9 @@
     import ServerService from '../../services/ServerService';
     import FlashService from '../../services/FlashService';
     import Server from '../../models/Server';
-    import Promise from 'es6-promise';
+    import Promise from 'bluebird';
+    window.$ = window.jQuery = require('materialize-css/node_modules/jquery/dist/jquery.js');
+    require('materialize-css');
 
     export default {
         serverService: null,
@@ -105,7 +122,7 @@
                 Server.all().then(servers => {
                     this.servers = servers;
 
-                    return servers;
+                    return Promise.resolve(servers);
                 }).then(servers => {
                     if(!servers.length || servers.length < config.servers.length){
                         FlashService.flash('info', 'Creating default servers');
@@ -116,6 +133,8 @@
                                 FlashService.flash('success', 'Created the default servers!');
                                 this.servers = servers;
                             });
+
+                            return null;
                         }).catch(err => {
                             FlashService.flash('error', err);
                         });
@@ -126,10 +145,14 @@
                                 FlashService.flash('success', 'Updated the default servers!');
                                 this.servers = servers;
                             });
+
+                            return null;
                         }).catch(err => {
                             FlashService.flash('error', err);
                         });
                     }
+
+                    return null;
                 });
             }
         },
@@ -145,7 +168,3 @@
         }
     }
 </script>
-
-<style lang="sass">
-
-</style>
