@@ -28,9 +28,9 @@ export default class AccessTokenService {
         });
     }
 
-    static setExpiresAt(expires) {
+    static setExpiresAt(seconds) {
         let now = Moment();
-        now.add('seconds', expires);
+        now.add(seconds, 'seconds');
 
         return now;
     }
