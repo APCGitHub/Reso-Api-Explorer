@@ -38,10 +38,20 @@ export default class ServerService {
 
         if(server.config && server.config.openid){
             for(let i = 0; i < server.config.openid.length; i++){
-                params.push({
-                    key: server.config.openid[i].key,
-                    value: server.config.openid[i].value
-                });
+                let _c = server.config.openid[i];
+                let o = {
+                    key: _c.key,
+                    value: _c.value
+                };
+
+                if(_c._key && _c._key === 'redirect_uri'){
+                    o.value = server.redirect_uri;
+
+                    if(_c.encode)
+                        o.value = encodeURIComponent(server.redirect_uri);
+                }
+
+                params.push(o);
             }
         }
 
@@ -50,6 +60,8 @@ export default class ServerService {
                 return `${p.key}=${p.value}`;
             });
         }
+
+        params.push("response_type=code");
 
         url += "?" + params.join('&');
 
