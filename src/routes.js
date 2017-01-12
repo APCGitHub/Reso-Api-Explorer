@@ -4,6 +4,7 @@
 import VueRouter from 'vue-router';
 import Home from './components/Home.vue';
 import Explore from './components/Explore.vue';
+import OAuth from './components/explorer/OAuth.vue';
 import Servers from './components/server/Index.vue';
 import NewServer from './components/server/Create.vue';
 import ServerEdit from './components/server/Edit.vue';
@@ -28,6 +29,11 @@ const routes = [
         path: '/servers/create',
         name: 'servers.create',
         component: NewServer
+    },
+    {
+        path: '/explore/:id/oauth',
+        name: 'servers.oauth',
+        component: OAuth
     },
     {
         path: '/explore/:id',
