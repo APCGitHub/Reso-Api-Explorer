@@ -21,7 +21,7 @@
             <div class="row mb0">
                 <div class="col s6">
                     <router-link 
-                        v-if="server.access_token" 
+                        v-if="server.access_token && !tokenIsExpired" 
                         :to="{name: 'explore', params: {id: server.id}}" 
                         tag="button" 
                         class="btn waves-effect waves-light cyan thin-button lighten-1">
@@ -45,6 +45,7 @@
 <script type="text/babel">
 	window.$ = window.jQuery = require('materialize-css/node_modules/jquery/dist/jquery.js');
     require('materialize-css');
+    import moment from 'moment';
 
 	export default {
 		props: ['server'],
@@ -54,10 +55,12 @@
 			};
 		},
 		mounted() {
-			$('.dropdown-btn').dropdown({
-				constrain_width: false,
-				belowOrigin: true,
-				alignment: 'right'
+			$(document).ready(() => {
+				$('.dropdown-btn').dropdown({
+					constrain_width: false,
+					belowOrigin: true,
+					alignment: 'right'
+				});
 			});
 		},
 		methods: {
@@ -100,6 +103,13 @@
 	                type: 'info'
 	            });
 	        }
+		},
+		computed: {
+			tokenIsExpired() {
+				let now = moment();
+
+				return now.isAfter(this.server.expires_at);
+			}
 		}
 	}
 </script>
