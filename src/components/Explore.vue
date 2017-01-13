@@ -208,9 +208,7 @@
     import _ from 'lodash';
     import $ from 'jquery';
     import swal from 'sweetalert';
-    import Promise from 'bluebird';
     import config from '../config/env';
-    import Moment from 'moment';
     window.$ = window.jQuery = require('materialize-css/node_modules/jquery/dist/jquery.js');
     require('materialize-css');
 
@@ -298,21 +296,17 @@
                 this.map.instance = map;
                 this.services.marker_service = new markerService(this.map.instance);
             });
-
-            //Handle query click scroll
-            $(document).ready(() => {
-                $('.try-query').click(() => {
-                    $('html, body').animate({
-                        scrollTop: $(".query-builder-wrapper").offset().top
-                    }, 400);
-                });
-            });
         },
         methods: {
+            scrollToQuery() {
+                $('html, body').animate({
+                    scrollTop: $(".query-builder-wrapper").offset().top
+                }, 400);
+            },
             /**
              * Clear the query builder
              */
-            clear(){
+            clear() {
                 this.query_builder = {
                     select: '',
                     filter: [],
@@ -386,6 +380,8 @@
                 this.query_builder.orderby = q.query.orderby;
                 this.query_builder.top = q.query.top;
                 this.query_builder.skip = q.query.skip;
+
+                this.scrollToQuery();
             },
             /**
              * Remove a filter.
@@ -428,12 +424,6 @@
              * This method grabs an auth code from the authorizer if granted access
              */
             fetchAuthCode() {
-                // let url = this.server.auth_endpoint;
-
-                // url += '?client_id=' + this.server.client_id;
-                // url += '&redirect_uri=' + encodeURIComponent(this.server.redirect_uri);
-                // url += '&response_type=code';
-
                 let url = serverService.openIdConnectUrl(this.server);
 
                 window.location = url;
@@ -453,28 +443,6 @@
                         scrollTop: offset
                     }, 400);
                 }, 400);
-            },
-            getToken(client_secret) {
-                return new Promise((resolve, reject) => {
-                    this.services.accesstoken_service.getToken(client_secret, this.code).then((res) => {
-                        let resBody = res.body;
-                        let expires_at = accessTokenSerivce.setExpiresAt(resBody.expires_in);
-
-                        //Try to update the server with the new access token
-                        this.server.update({
-                            access_token: resBody.access_token,
-                            expires_at: expires_at
-                        }).then((server) => {
-                            this.server = server;
-
-                            resolve(1);
-                        }, () => {
-                            reject();
-                        });
-                    }, (err) => {
-                        reject(err);
-                    });
-                });
             }
         },
         computed: {
@@ -495,11 +463,6 @@
 
                     return base;
                 }
-            }
-        },
-        events: {
-            'orderby.delete'(id) {
-                console.log(id);
             }
         }
     }
