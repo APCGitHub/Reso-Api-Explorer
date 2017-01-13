@@ -1,22 +1,34 @@
 <template>
 	<div class="row mt-lg">
-		<div class="col s12 m6 offset-m3">
-			<div class="section">
-				<div class="card">
-					<div class="card-content" v-if="server">
-						<div class="card-title">{{server.name}}</div>
-						<div class="row">
-							<div class="col s12 m6">
-								<button :disabled="code" @click="fetchAuthCode" class="btn waves-effect waves-light cyan lighten-1"><i class="fa fa-check mr-sm" v-show="code"></i>Fetch Code</button>
-							</div>
-							<div class="col s12 m6">
+		<div class="col s12 m8 offset-m2">
+			<div class="card">
+				<div class="card-content">
+					<div class="card-title">
+					{{server.name}}
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col s12 m6">
+					<div class="card">
+						<div class="card-content center-align">
+							<div class="card-title">Auth Code</div>
+							<button :disabled="code" @click="fetchAuthCode" class="btn waves-effect waves-light cyan lighten-1"><i class="fa fa-check mr-sm" v-show="code"></i>Fetch Code</button>
+						</div>
+					</div>
+				</div>
+				<div class="col s12 m6">
+					<div class="card">
+						<div class="card-content center-align">
+							<div class="card-title">Access Token</div>
 								<button :disabled="!code || got_access_token" @click="checkIfHasSecret" class="btn waves-effect waves-light cyan lighten-1">
-									<i class="fa fa-check mr-sm" v-show="got_access_token"></i>Fetch Access Token
+									<i class="fa fa-check mr-sm" v-show="got_access_token"></i>
+									Fetch Access Token
 								</button>
 							</div>
 						</div>
 					</div>
-				</div>
+				</div>	
 			</div>
 		</div>
 	</div>
@@ -92,26 +104,26 @@
 			},
 			fetchAccessToken(secret) {
 				this.accessTokenService.getToken(secret, this.code).then(res => {
-                		let body = res.body;
-                		let expires_at = AccessTokenService.setExpiresAt(body.expires_in);
+            		let body = res.body;
+            		let expires_at = AccessTokenService.setExpiresAt(body.expires_in);
 
-                		return this.server.update({
-                			access_token: body.access_token,
-                        	expires_at: expires_at
-                		});
-					}).then(res => {
-						this.got_access_token = true;
-						swal({
-							title: 'Success!', 
-							text: 'Successfully fetched a new access token.',
-							type:'success',
-							confirmButtonText: 'Continue'
-						}, () => {
-							this.$router.push({name: 'explore', params: {id: this.server.id}});
-						});
-					}).catch(err => {
-						swal('Uh oh', 'There was an error while trying to fetch a new access token', 'warning');
+            		return this.server.update({
+            			access_token: body.access_token,
+                    	expires_at: expires_at
+            		});
+				}).then(res => {
+					this.got_access_token = true;
+					swal({
+						title: 'Success!', 
+						text: 'Successfully fetched a new access token.',
+						type:'success',
+						confirmButtonText: 'Continue'
+					}, () => {
+						this.$router.push({name: 'explore', params: {id: this.server.id}});
 					});
+				}).catch(err => {
+					swal('Uh oh', 'There was an error while trying to fetch a new access token', 'warning');
+				});
 			}
 		}
 	}
