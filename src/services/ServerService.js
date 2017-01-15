@@ -4,13 +4,10 @@
 import Server from '../models/Server';
 import Promise from 'bluebird';
 import Config from '../config/env';
+import Vue from 'vue';
 
 export default class ServerService {
-    constructor(){
-        if(localStorage.getItem(this.key) === null){
-            localStorage.setItem(this.key, JSON.stringify([]));
-        }
-    }
+    constructor(){}
 
     createDefaultServers() {
         let servers = Config.servers;
@@ -28,6 +25,20 @@ export default class ServerService {
         return new Promise((resolve, reject) => {
             Server.batchUpdate(servers).then(() => {
                 resolve();
+            });
+        });
+    }
+
+    fetchWellKnown(path = '') {
+        return new Promise((resolve, reject) => {
+            Vue.http.get(path).then(res => {
+                let body = res.body;
+
+                resolve(body);
+            }).catch(err => {
+                let body = err.body;
+
+                reject(body);
             });
         });
     }
