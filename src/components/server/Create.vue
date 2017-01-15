@@ -79,6 +79,7 @@
     import Server from '../../models/Server';
     import OpenIdConfig from './components/OpenIdConfig.vue';
     import Draggable from 'vuedraggable';
+    import ServerService from '../../services/ServerService';
     window.$ = window.jQuery = require('materialize-css/node_modules/jquery/dist/jquery.js');
     require('materialize-css');
 
@@ -96,6 +97,9 @@
                 data_endpoint: '',
                 show_advanced: false
             }
+        },
+        created() {
+            this.serverService = new ServerService();
         },
         mounted() {
             $(document).ready(() => {
@@ -140,5 +144,3 @@
         }
     }
 </script>
-
-<style lang="sass"></style>
