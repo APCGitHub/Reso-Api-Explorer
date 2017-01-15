@@ -4,7 +4,7 @@
             <span class="card-title">
             	{{server.name}}
             	<a class="dropdown-btn clickable right" :data-activates="'server-dropdown-' + server.id">
-            		<i class="fa fa-ellipsis-v"></i>
+            		<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
 
             		<ul :id="'server-dropdown-' + server.id" class="dropdown-content">
 				    	<li><a @click="clearToken">Clear Token</a></li>
