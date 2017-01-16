@@ -3,7 +3,7 @@
         <div class="card-content">
             <span class="card-title">
             	{{server.name}}
-            	<a class="dropdown-btn clickable right" :data-activates="'server-dropdown-' + server.id">
+            	<a class="dropdown-btn clickable right cyan-text" :data-activates="'server-dropdown-' + server.id">
             		<i class="fa fa-ellipsis-v" aria-hidden="true"></i>
 
             		<ul :id="'server-dropdown-' + server.id" class="dropdown-content">
