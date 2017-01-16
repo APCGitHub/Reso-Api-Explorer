@@ -29,7 +29,7 @@ export default class ServerService {
         });
     }
 
-    fetchWellKnown(path = '') {
+    static fetchWellKnown(path = '') {
         return new Promise((resolve, reject) => {
             Vue.http.get(path).then(res => {
                 let body = res.body;

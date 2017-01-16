@@ -6,7 +6,7 @@
                     <div class="card-content">
                         <span class="card-title">New Server</span>
                         <div class="divider"></div>
-                        <form @submit="validateBeforeSubmit" class="mt-sm">
+                        <form @submit.prevent="validateBeforeSubmit" class="mt-sm">
                             <div class="row">
                                 <div class="input-field col s6">
                                     <input placeholder="Matrix" name="name" type="text" id="name" v-model="server.name" v-validate.initial="server.name" data-vv-rules="required" :class="{'invalid': errors.has('name')}">
@@ -49,7 +49,7 @@
                             </div>
                             <div class="row">
                                 <div class="col s12">
-                                    <span class="blue-text clickable" @click="show_advanced = !show_advanced">Advanced</span>
+                                    <button class="btn-flat waves-effect waves-light" type="button" @click="show_advanced = !show_advanced">Advanced</button>
                                     <div v-show="show_advanced">
                                         <div class="card-title">OpendID Parameters</div>
                                         <draggable :options="{handle: '.handle'}" :list="server.config.openid">
@@ -71,6 +71,39 @@
                 </div>
             </div>
         </div>
+
+        <!-- Well known modal -->
+        <div id="well-known-modal" class="modal">
+            <form @submit.prevent="checkWellKnown">
+                <div class="modal-content">
+                    <h4>Import well-known <i class="modal-action modal-close fa fa-times grey-text right clickable"></i></h4>
+                    <div class="row">
+                        <div class="col input-field s12">
+                            <input v-model="well_known" name="url" id="url" type="text" placeholder="https://api.com/.well-known/openid-configuration">
+                            <label class="active" for="url">Well-known</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <span></span>
+                    <button :disabled="!well_known" type="submit" class="waves-effect waves-green btn">Go!</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- FAB -->
+        <div class="fixed-action-btn">
+            <a class="btn-floating btn-large cyan lightn-1">
+              <i class="fa fa-ellipsis-v"></i>
+            </a>
+            <ul>
+                <li>
+                    <a @click="openWellKnownModal" class="btn-floating cyan lighten-1 tooltipped" data-position="left" data-delay="50" data-tooltip="Upload url to well-known config">
+                        <i class="fa fa-cloud-upload" aria-hidden="true"></i>
+                    </a>
+                </li>
+            </ul>
+        </div>
     </div>
 </template>
 
@@ -88,13 +121,13 @@
         serverService: null,
         data() {
             return {
+                http: {
+                    well_known: {
+                        loading: false
+                    }
+                },
+                well_known: '',
                 server: new Server(),
-                id: '',
-                client_id: '',
-                name: '',
-                auth_endpoint: '',
-                token_endpoint: '',
-                data_endpoint: '',
                 show_advanced: false
             }
         },
@@ -104,12 +137,14 @@
         mounted() {
             $(document).ready(() => {
                 $('.tooltipped').tooltip({delay: 50});
+                $('.modal').modal({
+                    dismissible: true,
+                    opacity: 0.6
+                });
             });     
         },
         methods: {
-            validateBeforeSubmit(e) {
-                e.preventDefault();
-
+            validateBeforeSubmit() {
                 this.$validator.validateAll();
 
                 if (this.errors.any()) {
@@ -140,6 +175,31 @@
             },
             deleteOpenIdConfig(index) {
                 this.server.config.openid.splice(index, 1);
+            },
+            openWellKnownModal() {
+                $('#well-known-modal').modal('open');
+            },
+            checkWellKnown() {
+                this.http.well_known.loading = true;
+
+                ServerService.fetchWellKnown(this.well_known).then(res => {
+                    this.http.well_known.loading = false;
+
+                    $('#well-known-modal').modal('close');
+                    
+                    this.handleWellKnownResponse(res);
+                }).catch(err => {
+                    this.http.well_known.loading = false;
+                });
+            },
+            handleWellKnownResponse(config) {
+                if(config.authorization_endpoint) {
+                    this.server.auth_endpoint = config.authorization_endpoint;
+                }
+
+                if(config.token_endpoint) {
+                    this.server.token_endpoint = config.token_endpoint;
+                }
             }
         }
     }
