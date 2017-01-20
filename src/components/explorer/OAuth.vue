@@ -3,7 +3,7 @@
 		<div class="col s12 m8 offset-m2">
 			<div class="card">
 				<div class="card-content">
-					<div class="card-title">
+					<div class="card-title" v-if="server">
 					{{server.name}}
 					</div>
 				</div>
